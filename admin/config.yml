@@ -1,0 +1,57 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Where uploaded images go
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "settings"
+    label: "Website Settings"
+    files:
+      - name: "general"
+        label: "General Data (Locations, Prices, News, Contact)"
+        file: "data/data.json"
+        fields:
+          - label: "Contact Info"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Company Name", name: "name", widget: "string" }
+              - { label: "Tagline (Footer)", name: "tagline", widget: "text" }
+              - { label: "Phone", name: "phone", widget: "string" }
+              - { label: "WhatsApp (numbers only, no +)", name: "whatsapp", widget: "string" }
+              - { label: "Email", name: "email", widget: "string" }
+              - { label: "Address", name: "address", widget: "string" }
+
+          - label: "Locations (Sales Points)"
+            name: "locations"
+            widget: "list"
+            fields:
+              - { label: "City", name: "city", widget: "string" }
+              - { label: "Is Main Factory?", name: "is_main", widget: "boolean", default: false }
+              - { label: "Contact Person", name: "contact", widget: "string", required: false }
+              - { label: "Phone", name: "phone", widget: "string", required: false }
+              - { label: "WhatsApp", name: "whatsapp", widget: "string", required: false }
+              - { label: "Address", name: "address", widget: "string" }
+              - { label: "Location Image (Upload via Browse)", name: "image", widget: "image", required: false, hint: "Click Browse to upload a photo of this location" }
+
+          - label: "Price List"
+            name: "prices"
+            widget: "list"
+            fields:
+              - { label: "Product Name", name: "name", widget: "string" }
+              - { label: "Unit (e.g., Per Ton)", name: "unit", widget: "string" }
+              - { label: "Price (PKR)", name: "price", widget: "string" }
+              - { label: "Badge (e.g., Best Seller, Premium, Bulk)", name: "badge", widget: "string", required: false }
+              - { label: "Is Wanda Product?", name: "is_wanda", widget: "boolean", default: false }
+
+          - label: "News & Updates"
+            name: "news"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Date (e.g., Aug 10)", name: "date", widget: "string" }
+              - { label: "Content", name: "content", widget: "text" }
+              - { label: "Tag (e.g., Announcement, Logistics)", name: "tag", widget: "string" }

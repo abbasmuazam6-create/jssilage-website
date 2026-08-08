@@ -1,0 +1,86 @@
+{
+  "contact": {
+    "name": "JS Silage & Wanda Factory",
+    "tagline": "JS Silage & Wanda Factory — Quality silage and agricultural solutions since 2010.",
+    "phone": "+92 300 1234567",
+    "whatsapp": "923001234567",
+    "email": "info@jssilage.com",
+    "address": "Main Factory Road, Hasilpur, Punjab"
+  },
+  "locations": [
+    {
+      "city": "Hasilpur",
+      "is_main": true,
+      "contact": "Junaid (Owner / Founder)",
+      "phone": "+92 300 1234567",
+      "whatsapp": "923001234567",
+      "address": "Main Factory Road, Hasilpur, Punjab",
+      "image": ""
+    },
+    {
+      "city": "Gojra",
+      "is_main": false,
+      "contact": "Ali Raza",
+      "phone": "+92 300 4567891",
+      "whatsapp": "",
+      "address": "Near Grain Market, Gojra",
+      "image": ""
+    },
+    {
+      "city": "Tarnol",
+      "is_main": false,
+      "contact": "Bilal Ahmed",
+      "phone": "+92 300 5678912",
+      "whatsapp": "",
+      "address": "Tarnol Industrial Zone, Islamabad",
+      "image": ""
+    },
+    {
+      "city": "Peshawar",
+      "is_main": false,
+      "contact": "Fazal Karim",
+      "phone": "+92 300 6789123",
+      "whatsapp": "",
+      "address": "Ring Road, Peshawar City",
+      "image": ""
+    },
+    {
+      "city": "Kohat",
+      "is_main": false,
+      "contact": "Naseer Khan",
+      "phone": "+92 300 7891234",
+      "whatsapp": "",
+      "address": "Kohat Bypass Road, Kohat",
+      "image": ""
+    },
+    {
+      "city": "Rawalpindi",
+      "is_main": false,
+      "contact": "Shahid Malik",
+      "phone": "+92 300 8912345",
+      "whatsapp": "",
+      "address": "6th Road, Rawalpindi",
+      "image": ""
+    },
+    {
+      "city": "Rawat",
+      "is_main": false,
+      "contact": "Imran Javed",
+      "phone": "+92 300 9123456",
+      "whatsapp": "",
+      "address": "Rawat Chowk, Rawalpindi",
+      "image": ""
+    }
+  ],
+  "prices": [
+    { "name": "Silage", "unit": "Open (Per Ton)", "price": "25,000", "badge": "Bulk", "is_wanda": false },
+    { "name": "Silage", "unit": "Baled (Per Bale)", "price": "1,200", "badge": "Best Seller", "is_wanda": false },
+    { "name": "Silage", "unit": "Bagged (Per 40kg Bag)", "price": "1,000", "badge": "Retail", "is_wanda": false },
+    { "name": "Wanda", "unit": "Supplement (Per 20kg Bag)", "price": "3,500", "badge": "Premium", "is_wanda": true }
+  ],
+  "news": [
+    { "title": "New Sales Point in Kohat", "date": "Aug 10", "content": "We are proud to open our 7th sales point in Kohat to serve farmers in KPK better.", "tag": "Announcement" },
+    { "title": "Free Delivery on Bulk Orders", "date": "Jul 28", "content": "For a limited time, enjoy free delivery on all silage orders above 10 tons.", "tag": "Logistics" },
+    { "title": "Wanda Supplement — Now in Pellets", "date": "Jul 15", "content": "Our signature Wanda supplement is now available in easy-to-use pellet form.", "tag": "Product" }
+  ]
+}

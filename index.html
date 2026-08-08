@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Silage & Wanda Factory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#home" class="logo">
+                <img src="images/JS Final logo.jpeg" alt="JS Silage & Wanda Logo" />
+                <span>JS</span> Silage &amp; Wanda
+            </a>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#locations">Locations</a></li>
+                <li><a href="#prices">Prices</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== FLOATING BUTTONS ===== -->
+    <a href="#" id="whatsappLink" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="#home" class="back-to-top">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- ===== HERO ===== -->
+    <section id="home" class="hero">
+        <div class="container hero-content" id="heroContent">
+            <div class="hero-badge"><i class="fas fa-leaf"></i> Pakistan's Trusted Agri-Brand</div>
+            <h1>JS Silage <span>&amp;</span> Wanda Factory</h1>
+            <p class="hero-sub">Premium silage &amp; agricultural solutions — serving farmers across Pakistan.</p>
+            <div class="hero-buttons">
+                <a href="#products" class="btn btn-primary"><i class="fas fa-seedling"></i> Explore Products</a>
+                <a href="#locations" class="btn btn-outline"><i class="fas fa-map-pin"></i> Find a Location</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT (Static) ===== -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="fade-in">
+                <h2>About Our Factory</h2>
+                <p class="section-subtitle">Based in <strong>Hasilpur</strong>, we are a family-owned business committed to quality.</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-text fade-in fade-in-d1">
+                    <p><strong>JS Silage &amp; Wanda Factory</strong> has been at the heart of Pakistan's agricultural community for over a decade. Our state-of-the-art facility produces premium silage in <strong>Open, Baled, and Bags</strong> to meet the diverse needs of livestock farmers nationwide.</p>
+                    <p>In addition, we proudly offer <strong>Wanda</strong> — a specialized feed supplement designed for enhanced animal nutrition and health.</p>
+                    <div class="about-mission">
+                        <div class="mission-card"><i class="fas fa-bullseye"></i><div><h4>Our Mission</h4><p>To provide top-tier silage that maximizes livestock productivity.</p></div></div>
+                        <div class="mission-card"><i class="fas fa-eye"></i><div><h4>Our Vision</h4><p>To be Pakistan's most trusted agricultural partner.</p></div></div>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat-item"><span class="stat-number">10+</span><span class="stat-label">Years of Excellence</span></div>
+                        <div class="stat-item"><span class="stat-number">7</span><span class="stat-label">Sales Points</span></div>
+                        <div class="stat-item"><span class="stat-number">100%</span><span class="stat-label">Farmer Trust</span></div>
+                    </div>
+                </div>
+                <div class="about-image-wrapper fade-in fade-in-d2">
+                    <div class="about-image-frame">
+                        <img src="images/junaid.jpg" alt="Junaid - Owner" />
+                        <div class="image-overlay"><span>Founder &amp; Managing Partner</span><strong>Junaid</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRODUCTS (Static) ===== -->
+    <section id="products" class="section alt-bg">
+        <div class="container">
+            <div class="fade-in"><h2>Our Products</h2><p class="section-subtitle">High-quality silage in three forms, plus our signature Wanda supplement.</p></div>
+            <div class="product-grid">
+                <div class="product-card fade-in fade-in-d1"><div class="card-image-wrap"><img src="images/product-open.jpg" alt="Open Silage" /><div class="image-overlay-btn"><button onclick="openModal('open')"><i class="fas fa-eye"></i> View Details</button></div><span class="card-badge">Bulk Supply</span></div><div class="product-body"><h3>Open Silage</h3><p>Loose, high-moisture silage loaded directly from our silos.</p><div class="product-features"><span><i class="fas fa-check-circle"></i> High Protein</span><span><i class="fas fa-check-circle"></i> 85% Moisture</span><span><i class="fas fa-check-circle"></i> 6 Months Shelf Life</span></div><span class="product-tag"><i class="fas fa-weight-scale"></i> Per Ton</span></div></div>
+                <div class="product-card fade-in fade-in-d2"><div class="card-image-wrap"><img src="images/product-baled.jpg" alt="Baled Silage" /><div class="image-overlay-btn"><button onclick="openModal('baled')"><i class="fas fa-eye"></i> View Details</button></div><span class="card-badge best-seller">Best Seller</span></div><div class="product-body"><h3>Baled Silage</h3><p>Wrapped, fermented bales with excellent preservation.</p><div class="product-features"><span><i class="fas fa-check-circle"></i> 98% Preservation</span><span><i class="fas fa-check-circle"></i> Easy Transport</span><span><i class="fas fa-check-circle"></i> 12 Months Shelf Life</span></div><span class="product-tag"><i class="fas fa-circle"></i> Per Bale</span></div></div>
+                <div class="product-card fade-in fade-in-d3"><div class="card-image-wrap"><img src="images/product-bags.jpg" alt="Bagged Silage" /><div class="image-overlay-btn"><button onclick="openModal('bags')"><i class="fas fa-eye"></i> View Details</button></div><span class="card-badge">Retail Ready</span></div><div class="product-body"><h3>Bagged Silage</h3><p>Convenient, sealed bags with consistent quality.</p><div class="product-features"><span><i class="fas fa-check-circle"></i> Ready to Use</span><span><i class="fas fa-check-circle"></i> Zero Waste</span><span><i class="fas fa-check-circle"></i> 9 Months Shelf Life</span></div><span class="product-tag"><i class="fas fa-shopping-bag"></i> Per 40kg Bag</span></div></div>
+            </div>
+            <div class="wanda-highlight fade-in fade-in-d4"><div class="wanda-card"><div class="wanda-ribbon"><i class="fas fa-star"></i> Premium Product</div><div class="wanda-content"><div class="wanda-image"><img src="images/product-wanda.jpg" alt="Wanda Supplement" /></div><div class="wanda-info"><h3>Wanda <span>Premium Supplement</span></h3><p>A unique, nutrient-rich feed supplement formulated to boost milk production.</p><div class="wanda-benefits"><div class="benefit-item"><i class="fas fa-cow"></i> <span>Boosts Milk Yield <strong>+25%</strong></span></div><div class="benefit-item"><i class="fas fa-shield-alt"></i> <span>Improves Immunity</span></div><div class="benefit-item"><i class="fas fa-leaf"></i> <span>100% Natural Ingredients</span></div></div><span class="product-tag gold-tag"><i class="fas fa-flask"></i> Powder &amp; Pellets</span></div></div></div></div>
+        </div>
+    </section>
+
+    <!-- ===== LOCATIONS (Dynamic) ===== -->
+    <section id="locations" class="section">
+        <div class="container">
+            <div class="fade-in"><h2>Our Sales Network</h2><p class="section-subtitle">Find your nearest sales point. <strong>Hasilpur</strong> is our main factory.</p></div>
+            <div class="location-grid" id="locationGrid"></div>
+            <div class="locations-more fade-in"><i class="fas fa-plus-circle"></i><p>More sales points coming soon.</p></div>
+        </div>
+    </section>
+
+    <!-- ===== PRICES (Dynamic) ===== -->
+    <section id="prices" class="section alt-bg">
+        <div class="container">
+            <div class="fade-in"><h2>Price List</h2><p class="section-subtitle price-disclaimer"><i class="fas fa-exclamation-triangle"></i> Prices are subject to change.</p></div>
+            <div class="price-wrapper fade-in">
+                <div class="price-table-card">
+                    <div class="price-table-header"><h3><i class="fas fa-tags"></i> Current Rates (PKR)</h3><span class="validity-tag">Valid until Sep 30, 2026</span></div>
+                    <div class="price-table-wrapper"><table class="price-table"><thead><tr><th>Product</th><th>Form / Unit</th><th class="price-col">Price (PKR)</th><th class="action-col">Popularity</th></tr></thead><tbody id="priceTableBody"></tbody></table></div>
+                </div>
+                <div class="price-footer-actions">
+                    <div class="bulk-note"><i class="fas fa-truck"></i><div><strong>Bulk Order Discounts</strong><p>Contact for wholesale prices above 10 tons.</p></div></div>
+                    <div class="price-buttons"><a href="#contact" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Request Quote</a><a href="price-list.pdf" download class="btn-outline-secondary"><i class="fas fa-file-pdf"></i> Download PDF</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== NEWS (Dynamic) ===== -->
+    <section id="news" class="section">
+        <div class="container">
+            <div class="fade-in"><h2>Latest News</h2><p class="section-subtitle">Stay updated with JS Silage &amp; Wanda.</p></div>
+            <div class="news-grid" id="newsGrid"></div>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT (Dynamic) ===== -->
+    <section id="contact" class="section alt-bg">
+        <div class="container">
+            <div class="fade-in"><h2>Contact Us</h2><p class="section-subtitle">Get in touch with our head office in Hasilpur.</p></div>
+            <div class="contact-grid">
+                <div class="contact-info fade-in fade-in-d1" id="contactInfo"></div>
+                <form class="contact-form fade-in fade-in-d2"><input type="text" placeholder="Your Full Name" required /><input type="email" placeholder="Your Email Address" required /><input type="text" placeholder="Subject" /><textarea rows="5" placeholder="Your Message..."></textarea><button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Message</button></form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 id="modalTitle">Product Name</h2>
+            <p class="modal-sub" id="modalSub">Description</p>
+            <ul class="modal-features" id="modalFeatures"></ul>
+            <div class="modal-actions"><a href="#prices" class="btn btn-primary btn-small" onclick="closeModal()"><i class="fas fa-tag"></i> View Price</a><a href="#contact" class="btn btn-gold-outline btn-small" onclick="closeModal()"><i class="fas fa-paper-plane"></i> Request Quote</a></div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER (Dynamic) ===== -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><div class="footer-logo-wrap"><img src="images/JS Final logo.jpeg" alt="JS Logo" class="footer-logo" /></div><p id="footerTagline">JS Silage &amp; Wanda Factory — Quality silage and agricultural solutions since 2010.</p></div>
+                <div><h4>Quick Links</h4><a href="#home">Home</a><a href="#about">About</a><a href="#products">Products</a><a href="#locations">Locations</a></div>
+                <div><h4>Contact</h4><p id="footerPhone"><i class="fas fa-phone"></i> +92 300 1234567</p><p id="footerEmail"><i class="fas fa-envelope"></i> info@jssilage.com</p><div class="social-icons"><a href="#"><i class="fab fa-facebook"></i></a><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-youtube"></i></a></div></div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2026 JS Silage &amp; Wanda Factory. All rights reserved. | Hasilpur, Pakistan</p></div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu
+        document.getElementById('mobileMenu').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        // Product Modal
+        const modal = document.getElementById('productModal');
+        const productData = {
+            open: { title: 'Open Silage', sub: 'Loose, high-moisture silage for large-scale farms.', features: ['High Protein Content', '85% Moisture', '6 Months Shelf Life', 'Bulk Loading'] },
+            baled: { title: 'Baled Silage', sub: 'Wrapped, fermented bales with excellent preservation.', features: ['98% Preservation', 'Easy Transport', '12 Months Shelf Life', 'Weather-Resistant'] },
+            bags: { title: 'Bagged Silage', sub: 'Convenient, sealed bags for small to medium farms.', features: ['Ready to Use', 'Zero Waste', '9 Months Shelf Life', 'Consistent Quality'] }
+        };
+        window.openModal = function(key) {
+            const d = productData[key];
+            if (!d) return;
+            document.getElementById('modalTitle').textContent = d.title;
+            document.getElementById('modalSub').textContent = d.sub;
+            const list = document.getElementById('modalFeatures');
+            list.innerHTML = '';
+            d.features.forEach(f => { const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check-circle"></i> ${f}`;
+                list.appendChild(li); });
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+        window.closeModal = function() { modal.classList.remove('active');
+            document.body.style.overflow = 'auto'; };
+        modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+        // ----- LOAD DATA FROM JSON -----
+        async function loadData() {
+            try {
+                const res = await fetch('data/data.json');
+                const data = await res.json();
+
+                // 1. Contact & Footer
+                const c = data.contact;
+                document.getElementById('contactInfo').innerHTML = `
+                    <h3><i class="fas fa-factory"></i> ${c.name}</h3>
+                    <p><i class="fas fa-map-pin"></i> <strong>Address:</strong> ${c.address}</p>
+                    <p><i class="fas fa-phone"></i> <strong>Phone:</strong> <a href="tel:${c.phone}">${c.phone}</a></p>
+                    <p><i class="fab fa-whatsapp"></i> <strong>WhatsApp:</strong> <a href="https://wa.me/${c.whatsapp}">${c.whatsapp}</a></p>
+                    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:${c.email}">${c.email}</a></p>
+                    <hr /><p><i class="fas fa-info-circle"></i> For location-specific inquiries, visit <a href="#locations" style="color:var(--gold);font-weight:600;">Sales Network</a>.</p>
+                `;
+                document.getElementById('footerTagline').textContent = c.tagline;
+                document.getElementById('footerPhone').innerHTML = `<i class="fas fa-phone"></i> ${c.phone}`;
+                document.getElementById('footerEmail').innerHTML = `<i class="fas fa-envelope"></i> ${c.email}`;
+                document.getElementById('whatsappLink').href = `https://wa.me/${c.whatsapp}`;
+
+                // 2. Locations
+                const locContainer = document.getElementById('locationGrid');
+                locContainer.innerHTML = '';
+                data.locations.forEach((loc, index) => {
+                    const isMain = loc.is_main ? 'loc-main' : '';
+                    const delay = `fade-in-d${(index % 4) + 1}`;
+                    let badgeHtml = loc.is_main ? `<span class="factory-badge">🏭 Main Factory</span>` : '';
+                    let imgHtml = '';
+                    if (loc.image) {
+                        imgHtml = `<img src="${loc.image}" alt="${loc.city}" style="width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:12px;" />`;
+                    }
+                    let contactHtml = loc.contact ? `<p><i class="fas fa-user-tie"></i> <strong>${loc.contact}</strong></p>` : '';
+                    let phoneHtml = loc.phone ? `<p><i class="fas fa-phone"></i> <a href="tel:${loc.phone}">${loc.phone}</a></p>` : '';
+                    let waHtml = loc.whatsapp ? `<p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/${loc.whatsapp}">${loc.whatsapp}</a></p>` : '';
+                    locContainer.innerHTML += `
+                        <div class="location-card ${isMain} fade-in ${delay}">
+                            ${imgHtml}
+                            <h3><i class="fas fa-map-pin"></i> ${loc.city} ${badgeHtml}</h3>
+                            ${contactHtml}
+                            ${phoneHtml}
+                            ${waHtml}
+                            <p><i class="fas fa-location-dot"></i> ${loc.address}</p>
+                        </div>
+                    `;
+                });
+
+                // 3. Prices
+                const priceBody = document.getElementById('priceTableBody');
+                priceBody.innerHTML = '';
+                data.prices.forEach(p => {
+                    let badgeClass = 'popular-badge';
+                    let badgeText = p.badge || 'Standard';
+                    if (p.badge === 'Best Seller') badgeClass += ' popular';
+                    if (p.badge === 'Premium') badgeClass += ' premium-badge';
+                    const rowClass = p.is_wanda ? 'wanda-row' : '';
+                    const iconClass = p.is_wanda ? 'gold-icon' : '';
+                    const icon = p.is_wanda ? 'star' : (p.unit.includes('Ton') ? 'box-open' : (p.unit.includes('Bale') ? 'circle' : 'shopping-bag'));
+                    priceBody.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td><i class="fas fa-${icon} product-icon ${iconClass}"></i> <strong>${p.name}</strong></td>
+                            <td>${p.unit}</td>
+                            <td class="price-col"><strong>${p.price}</strong></td>
+                            <td class="action-col"><span class="${badgeClass}">${badgeText}</span></td>
+                        </tr>
+                    `;
+                });
+
+                // 4. News
+                const newsContainer = document.getElementById('newsGrid');
+                newsContainer.innerHTML = '';
+                data.news.forEach((n, index) => {
+                    const delay = `fade-in-d${(index % 3) + 1}`;
+                    newsContainer.innerHTML += `
+                        <div class="news-card fade-in ${delay}">
+                            <div class="news-date-badge">${n.date}</div>
+                            <span class="news-tag"><i class="fas fa-newspaper"></i> ${n.tag}</span>
+                            <h3>${n.title}</h3>
+                            <p>${n.content}</p>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('locationGrid').innerHTML = '<p style="text-align:center;color:red;">Could not load data. Please ensure data/data.json exists.</p>';
+            }
+        }
+
+        // Initial load
+        loadData();
+    </script>
+</body>
+</html>
