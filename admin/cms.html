@@ -5,51 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JS Silage CMS</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, sans-serif;
+            box-sizing: border-box;
         }
-        .loading {
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background: #f2f6f3;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 48px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+        h2 {
             color: #1a3a2a;
-            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        p {
+            color: #4d5f55;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .btn {
+            background: #c9a04e;
+            color: white;
+            border: none;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(201, 160, 78, 0.3);
+        }
+        .btn:hover {
+            background: #b58a3a;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: #4d5f55;
+            min-height: 24px;
         }
         .spinner {
             display: inline-block;
-            width: 24px;
-            height: 24px;
-            border: 3px solid #e0e0e0;
-            border-top: 3px solid #c9a04e;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #c9a04e;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-right: 12px;
+            margin-right: 8px;
+            vertical-align: middle;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none !important;
+        }
+        .error {
+            color: #b33c3c;
+        }
     </style>
 </head>
 <body>
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        Loading CMS...
+    <div class="container" id="app">
+        <img src="/images/JS Final logo.jpeg" alt="JS Silage Logo" class="logo" />
+        <h2>Loading CMS</h2>
+        <p id="message">Please wait...</p>
+        <button class="btn hidden" id="retryBtn">🔄 Retry</button>
+        <div class="status" id="status"></div>
     </div>
 
-    <!-- Load Decap CMS WITHOUT Identity Widget -->
+    <!-- Load Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
-        // When the CMS is ready, hide the loading message
-        window.CMS = window.CMS || {};
-        window.CMS.init = function() {
-            // The CMS will initialize itself
-            document.getElementById('loading').style.display = 'none';
-        };
+        (function() {
+            const messageEl = document.getElementById('message');
+            const statusEl = document.getElementById('status');
+            const retryBtn = document.getElementById('retryBtn');
 
-        // Check if the CMS loaded successfully
-        console.log('Decap CMS loading...');
+            // --- Helper: Show a retry button if CMS fails to load ---
+            function showRetry() {
+                messageEl.innerHTML = '⚠️ <span class="error">CMS failed to load</span>';
+                statusEl.textContent = 'Check your internet connection or try again.';
+                retryBtn.classList.remove('hidden');
+                retryBtn.onclick = function() {
+                    location.reload();
+                };
+            }
+
+            // --- Check if CMS is loaded ---
+            function checkCMS() {
+                if (window.CMS) {
+                    messageEl.textContent = '✅ CMS loaded successfully!';
+                    statusEl.textContent = 'The dashboard should appear in a moment.';
+                    retryBtn.classList.add('hidden');
+
+                    // If CMS is loaded but not initialized, initialize it
+                    if (!window.CMS._initialized) {
+                        window.CMS.init({
+                            config: {
+                                backend: {
+                                    name: 'git-gateway',
+                                    branch: 'main',
+                                    repo: 'abbasmuazam6-create/jssilage-website'
+                                },
+                                load_config: true
+                            }
+                        });
+                        window.CMS._initialized = true;
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            // --- Wait for CMS to load ---
+            let attempts = 0;
+            const maxAttempts = 15; // Wait up to ~15 seconds
+
+            function waitForCMS() {
+                attempts++;
+                if (checkCMS()) {
+                    return;
+                }
+
+                if (attempts >= maxAttempts) {
+                    // CMS didn't load in time
+                    showRetry();
+                    return;
+                }
+
+                // Try again in 1 second
+                setTimeout(waitForCMS, 1000);
+            }
+
+            // --- Start the process ---
+            waitForCMS();
+
+            // Also check if the CMS script itself fires an event
+            document.addEventListener('DOMContentLoaded', function() {
+                // If CMS is already loaded, it will be caught by the wait loop
+            });
+
+            // If the user is logged out, redirect to login
+            if (window.netlifyIdentity) {
+                const user = window.netlifyIdentity.currentUser();
+                if (!user) {
+                    // Not logged in, go back to login
+                    window.location.href = '/admin/';
+                }
+            } else {
+                // No Identity widget, assume we're coming from the login page
+                // and just wait for CMS to load.
+                console.log('No Identity widget found, assuming already logged in.');
+            }
+        })();
     </script>
 </body>
 </html>

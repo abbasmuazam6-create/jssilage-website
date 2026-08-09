@@ -6,7 +6,11 @@
     <title>JS Silage Admin Login</title>
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
@@ -40,20 +44,7 @@
             box-shadow: 0 4px 16px rgba(201, 160, 78, 0.3);
         }
         .btn:hover { background: #b58a3a; transform: translateY(-2px); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .status { margin-top: 16px; font-size: 0.9rem; color: #4d5f55; min-height: 24px; }
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #e0e0e0;
-            border-top: 2px solid #c9a04e;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status { margin-top: 16px; font-size: 0.9rem; color: #4d5f55; }
         .hidden { display: none !important; }
     </style>
 </head>
@@ -73,63 +64,51 @@
             const messageEl = document.getElementById('message');
             const statusEl = document.getElementById('status');
 
-            // --- Wait for Identity to initialize ---
-            netlifyIdentity.on('init', function(user) {
-                if (user) {
-                    messageEl.textContent = '✅ Logged in as ' + user.email;
-                    mainBtn.textContent = '📂 Enter CMS';
-                    mainBtn.disabled = false;
-                    mainBtn.onclick = function() {
-                        // Redirect to the CMS page
-                        window.location.href = '/admin/cms.html';
-                    };
-                    statusEl.textContent = 'Click "Enter CMS" to start editing.';
-                } else {
-                    messageEl.textContent = 'Click the button to log in.';
-                    mainBtn.textContent = '🔐 Login / Sign Up';
-                    mainBtn.disabled = false;
-                    mainBtn.onclick = function() {
-                        netlifyIdentity.open('login');
-                    };
-                    statusEl.textContent = '';
-                }
-            });
-
-            netlifyIdentity.on('login', function(user) {
+            function showLoggedIn(user) {
                 messageEl.textContent = '✅ Logged in as ' + user.email;
                 mainBtn.textContent = '📂 Enter CMS';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    window.location.href = '/admin/cms.html';
-                };
-                statusEl.textContent = 'Click "Enter CMS" to start editing.';
-            });
-
-            netlifyIdentity.on('logout', function() {
-                messageEl.textContent = 'Click the button to log in.';
-                mainBtn.textContent = '🔐 Login / Sign Up';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    netlifyIdentity.open('login');
-                };
-                statusEl.textContent = '';
-            });
-
-            // Check if user is already logged in
-            const user = netlifyIdentity.currentUser();
-            if (user) {
-                messageEl.textContent = '✅ Logged in as ' + user.email;
-                mainBtn.textContent = '📂 Enter CMS';
-                mainBtn.disabled = false;
                 mainBtn.onclick = function() {
                     window.location.href = '/admin/cms.html';
                 };
                 statusEl.textContent = 'Click "Enter CMS" to start editing.';
             }
 
+            function showLoggedOut() {
+                messageEl.textContent = 'Click the button to log in.';
+                mainBtn.textContent = '🔐 Login / Sign Up';
+                mainBtn.onclick = function() {
+                    netlifyIdentity.open('login');
+                };
+                statusEl.textContent = '';
+            }
+
+            // --- Initialize ---
+            const user = netlifyIdentity.currentUser();
+            if (user) {
+                showLoggedIn(user);
+            } else {
+                showLoggedOut();
+            }
+
+            netlifyIdentity.on('init', function(user) {
+                if (user) {
+                    showLoggedIn(user);
+                } else {
+                    showLoggedOut();
+                }
+            });
+
+            netlifyIdentity.on('login', function(user) {
+                showLoggedIn(user);
+            });
+
+            netlifyIdentity.on('logout', function() {
+                showLoggedOut();
+            });
+
             // If there's a token in the URL, open the popup automatically
-            if (window.location.hash.includes('invite_token') || 
-                window.location.hash.includes('recovery_token') || 
+            if (window.location.hash.includes('invite_token') ||
+                window.location.hash.includes('recovery_token') ||
                 window.location.hash.includes('confirmation_token')) {
                 setTimeout(function() {
                     netlifyIdentity.open('login');
