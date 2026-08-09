@@ -3,24 +3,20 @@ backend:
   branch: main
   repo: abbasmuazam6-create/jssilage-website
 
-# --- REQUIRED: Media folder settings ---
 media_folder: "images"
 public_folder: "/images"
 
-# --- REQUIRED: Media library (for image uploads) ---
 media_library:
   name: uploadcare
   config:
     publicKey: "demopublickey"
-  # Note: You can also use 'cloudinary' or 'default' — this is a placeholder
 
-# --- REQUIRED: Collections ---
 collections:
   - name: "settings"
     label: "Website Settings"
     files:
       - name: "general"
-        label: "General Data (Locations, Prices, News, Contact)"
+        label: "General Data"
         file: "data/data.json"
         fields:
           - label: "Contact Info"
@@ -34,7 +30,7 @@ collections:
               - { label: "Email", name: "email", widget: "string" }
               - { label: "Address", name: "address", widget: "string" }
 
-          - label: "Locations (Sales Points)"
+          - label: "Locations"
             name: "locations"
             widget: "list"
             fields:
@@ -44,16 +40,16 @@ collections:
               - { label: "Phone", name: "phone", widget: "string", required: false }
               - { label: "WhatsApp", name: "whatsapp", widget: "string", required: false }
               - { label: "Address", name: "address", widget: "string" }
-              - { label: "Location Image (Upload via Browse)", name: "image", widget: "image", required: false, hint: "Click Browse to upload a photo" }
+              - { label: "Location Image", name: "image", widget: "image", required: false }
 
           - label: "Price List"
             name: "prices"
             widget: "list"
             fields:
               - { label: "Product Name", name: "name", widget: "string" }
-              - { label: "Unit (e.g., Per Ton)", name: "unit", widget: "string" }
+              - { label: "Unit", name: "unit", widget: "string" }
               - { label: "Price (PKR)", name: "price", widget: "string" }
-              - { label: "Badge (e.g., Best Seller, Premium, Bulk)", name: "badge", widget: "string", required: false }
+              - { label: "Badge", name: "badge", widget: "string", required: false }
               - { label: "Is Wanda Product?", name: "is_wanda", widget: "boolean", default: false }
 
           - label: "News & Updates"
@@ -63,4 +59,4 @@ collections:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Date (e.g., Aug 10)", name: "date", widget: "string" }
               - { label: "Content", name: "content", widget: "text" }
-              - { label: "Tag (e.g., Announcement, Logistics)", name: "tag", widget: "string" }
+              - { label: "Tag", name: "tag", widget: "string" }
