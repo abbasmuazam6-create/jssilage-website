@@ -3,11 +3,9 @@ backend:
   branch: main
   repo: abbasmuazam6-create/jssilage-website
 
-# Media folder where images are stored
 media_folder: "images"
 public_folder: "/images"
 
-# Media library configuration
 media_library:
   name: uploadcare
   config:
@@ -15,7 +13,6 @@ media_library:
     multiple: true
     previewStep: true
     imagesOnly: true
-    crop: "16:9"
     tabs: "file url"
 
 collections:
@@ -23,10 +20,73 @@ collections:
     label: "Website Settings"
     files:
       - name: "general"
-        label: "General Data"
+        label: "All Website Content"
         file: "data/data.json"
         fields:
-          - label: "Contact Info"
+          # --- HERO SECTION ---
+          - label: "Hero Section"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Badge Text", name: "badge", widget: "string" }
+              - { label: "Title", name: "title", widget: "string", hint: "Use &amp; for & symbol" }
+              - { label: "Subtitle", name: "subtitle", widget: "text" }
+
+          # --- ABOUT SECTION ---
+          - label: "About Section"
+            name: "about"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Subtitle", name: "subtitle", widget: "text", hint: "Use <strong> for bold" }
+              - { label: "Description Paragraph 1", name: "description", widget: "text" }
+              - { label: "Description Paragraph 2", name: "description2", widget: "text" }
+              - { label: "Mission Statement", name: "mission", widget: "text" }
+              - { label: "Vision Statement", name: "vision", widget: "text" }
+              - { label: "Stats", name: "stats", widget: "list", fields: [{ label: "Number", name: "number", widget: "string" }, { label: "Label", name: "label", widget: "string" }] }
+              - { label: "Owner Name", name: "owner_name", widget: "string" }
+              - { label: "Owner Title", name: "owner_title", widget: "string" }
+              - { label: "Owner Photo", name: "owner_image", widget: "image", hint: "Upload Junaid's photo" }
+
+          # --- PRODUCTS SECTION ---
+          - label: "Products Section"
+            name: "products"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Subtitle", name: "subtitle", widget: "text" }
+
+          - label: "Product Items (Silage Forms)"
+            name: "product_items"
+            widget: "list"
+            fields:
+              - { label: "Product Name", name: "name", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Image", name: "image", widget: "image" }
+              - { label: "Badge", name: "badge", widget: "string", required: false }
+              - { label: "Features", name: "features", widget: "list", field: { label: "Feature", name: "feature", widget: "string" } }
+              - { label: "Tag", name: "tag", widget: "string" }
+              - { label: "Tag Icon", name: "tag_icon", widget: "string", default: "weight-scale", hint: "FontAwesome icon name (e.g., weight-scale, circle, shopping-bag)" }
+
+          # --- WANDA SECTION ---
+          - label: "Wanda Supplement"
+            name: "wanda"
+            widget: "object"
+            fields:
+              - { label: "Title", name: "title", widget: "string", hint: "Use <span> for highlight" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Image", name: "image", widget: "image" }
+              - { label: "Badge", name: "badge", widget: "string" }
+              - { label: "Tag", name: "tag", widget: "string" }
+              - label: "Benefits"
+                name: "benefits"
+                widget: "list"
+                fields:
+                  - { label: "Icon", name: "icon", widget: "string", hint: "FontAwesome icon name (e.g., cow, shield-alt, leaf)" }
+                  - { label: "Text", name: "text", widget: "text", hint: "Use <strong> for bold" }
+
+          # --- CONTACT INFO ---
+          - label: "Contact Information"
             name: "contact"
             widget: "object"
             fields:
@@ -37,7 +97,8 @@ collections:
               - { label: "Email", name: "email", widget: "string" }
               - { label: "Address", name: "address", widget: "string" }
 
-          - label: "Locations"
+          # --- LOCATIONS ---
+          - label: "Locations (Sales Points)"
             name: "locations"
             widget: "list"
             fields:
@@ -47,20 +108,9 @@ collections:
               - { label: "Phone", name: "phone", widget: "string", required: false }
               - { label: "WhatsApp", name: "whatsapp", widget: "string", required: false }
               - { label: "Address", name: "address", widget: "string" }
-              - { 
-                  label: "Location Image", 
-                  name: "image", 
-                  widget: "image", 
-                  required: false,
-                  media_library: {
-                    config: {
-                      multiple: false,
-                      previewStep: true,
-                      crop: "4:3"
-                    }
-                  }
-                }
+              - { label: "Location Image", name: "image", widget: "image", required: false }
 
+          # --- PRICES ---
           - label: "Price List"
             name: "prices"
             widget: "list"
@@ -71,6 +121,7 @@ collections:
               - { label: "Badge", name: "badge", widget: "string", required: false }
               - { label: "Is Wanda Product?", name: "is_wanda", widget: "boolean", default: false }
 
+          # --- NEWS ---
           - label: "News & Updates"
             name: "news"
             widget: "list"
@@ -79,16 +130,4 @@ collections:
               - { label: "Date (e.g., Aug 10)", name: "date", widget: "string" }
               - { label: "Content", name: "content", widget: "text" }
               - { label: "Tag", name: "tag", widget: "string" }
-              - { 
-                  label: "News Image", 
-                  name: "image", 
-                  widget: "image", 
-                  required: false,
-                  media_library: {
-                    config: {
-                      multiple: false,
-                      previewStep: true,
-                      crop: "16:9"
-                    }
-                  }
-                }
+              - { label: "News Image", name: "image", widget: "image", required: false }
