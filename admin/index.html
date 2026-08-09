@@ -7,7 +7,6 @@
     <!-- Load Netlify Identity Widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        /* Loading screen styles */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -24,6 +23,7 @@
             border-radius: 24px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.08);
             max-width: 400px;
+            width: 100%;
         }
         .logo { max-width: 100px; margin-bottom: 20px; }
         .spinner {
@@ -38,7 +38,7 @@
             vertical-align: middle;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .status { margin-top: 16px; color: #4d5f55; font-size: 0.9rem; }
+        .status { margin-top: 16px; color: #4d5f55; font-size: 0.9rem; min-height: 24px; }
         .btn {
             background: #c9a04e;
             color: white;
@@ -52,7 +52,10 @@
             transition: all 0.3s ease;
         }
         .btn:hover { background: #b58a3a; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .hidden { display: none !important; }
+        .error { color: #b33c3c; }
+        .success { color: #2d6a4f; }
     </style>
 </head>
 <body>
@@ -63,8 +66,8 @@
         <button class="btn hidden" id="actionBtn">Continue</button>
     </div>
 
-    <!-- Load Netlify CMS App (bundles React correctly) -->
-    <script src="https://unpkg.com/netlify-cms-app@^2.0.0/dist/netlify-cms-app.js"></script>
+    <!-- Use Decap CMS (stable version) -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <script>
         (function() {
             const netlifyIdentity = window.netlifyIdentity;
@@ -72,37 +75,64 @@
             const statusEl = document.getElementById('status');
             const actionBtn = document.getElementById('actionBtn');
 
-            // --- Helper: Show CMS is loading ---
+            // --- Helper: Show loading state ---
             function showLoading() {
                 messageEl.innerHTML = '<span class="spinner"></span> Loading CMS...';
                 statusEl.textContent = 'Please wait...';
                 actionBtn.classList.add('hidden');
+                actionBtn.disabled = true;
             }
 
-            // --- Helper: Show user is logged in ---
+            // --- Helper: Show logged in state ---
             function showLoggedIn(user) {
                 messageEl.textContent = '✅ Logged in as ' + user.email;
                 statusEl.textContent = 'CMS is loading...';
                 actionBtn.classList.add('hidden');
-                // The CMS should auto-init, but if it doesn't, we wait
+                actionBtn.disabled = true;
+                
+                // Try to manually initialize CMS if it doesn't auto-start
                 setTimeout(function() {
-                    if (!window.CMS || !window.CMS._initialized) {
-                        statusEl.textContent = 'CMS is taking longer than expected.';
-                        actionBtn.textContent = '🔄 Try Again';
-                        actionBtn.classList.remove('hidden');
-                        actionBtn.onclick = function() {
-                            location.reload();
-                        };
+                    if (window.CMS && !window.CMS._initialized) {
+                        try {
+                            window.CMS.init({
+                                config: {
+                                    backend: {
+                                        name: 'git-gateway',
+                                        branch: 'main',
+                                        repo: 'abbasmuazam6-create/jssilage-website'
+                                    }
+                                }
+                            });
+                            window.CMS._initialized = true;
+                            statusEl.textContent = '✅ CMS initialized!';
+                            messageEl.innerHTML = '🎉 Ready to edit!';
+                            actionBtn.textContent = '📂 Open Dashboard';
+                            actionBtn.classList.remove('hidden');
+                            actionBtn.disabled = false;
+                            actionBtn.onclick = function() {
+                                window.location.href = '/admin/#/';
+                            };
+                        } catch (e) {
+                            console.error('CMS init error:', e);
+                            statusEl.innerHTML = '<span class="error">❌ CMS initialization failed. Please refresh.</span>';
+                            actionBtn.textContent = '🔄 Retry';
+                            actionBtn.classList.remove('hidden');
+                            actionBtn.disabled = false;
+                            actionBtn.onclick = function() {
+                                location.reload();
+                            };
+                        }
                     }
-                }, 10000);
+                }, 3000);
             }
 
-            // --- Helper: Show logged out ---
+            // --- Helper: Show logged out state ---
             function showLoggedOut() {
                 messageEl.textContent = '🔐 Please log in';
                 statusEl.textContent = 'Click the button below.';
-                actionBtn.textContent = 'Login / Sign Up';
+                actionBtn.textContent = '🔐 Login / Sign Up';
                 actionBtn.classList.remove('hidden');
+                actionBtn.disabled = false;
                 actionBtn.onclick = function() {
                     netlifyIdentity.open('login');
                 };
@@ -118,7 +148,7 @@
                 }
             }
 
-            // --- Initialize ---
+            // --- Initialize Identity ---
             netlifyIdentity.on('init', checkUser);
             netlifyIdentity.on('login', function(user) {
                 showLoggedIn(user);
@@ -146,20 +176,21 @@
                 if (window.CMS) {
                     // CMS is loaded
                     clearInterval(cmsCheckInterval);
-                    statusEl.textContent = 'CMS loaded successfully!';
+                    statusEl.textContent = '✅ CMS loaded successfully!';
                     messageEl.innerHTML = '🎉 Ready to edit!';
                     actionBtn.textContent = '📂 Open Dashboard';
                     actionBtn.classList.remove('hidden');
+                    actionBtn.disabled = false;
                     actionBtn.onclick = function() {
-                        // If CMS is loaded, redirect to the default view
                         window.location.href = '/admin/#/';
                     };
-                } else if (cmsCheckCount > 15) {
-                    // CMS didn't load after ~15 seconds
+                } else if (cmsCheckCount > 20) {
+                    // CMS didn't load after ~20 seconds
                     clearInterval(cmsCheckInterval);
-                    statusEl.textContent = 'CMS failed to load. Please check your internet connection.';
+                    statusEl.innerHTML = '<span class="error">❌ CMS failed to load. Please check your internet connection and refresh.</span>';
                     actionBtn.textContent = '🔄 Retry';
                     actionBtn.classList.remove('hidden');
+                    actionBtn.disabled = false;
                     actionBtn.onclick = function() {
                         location.reload();
                     };
