@@ -31,16 +31,10 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        .error {
-            color: #b33c3c;
-        }
+        .error { color: #b33c3c; }
         .btn {
             background: #c9a04e;
             color: white;
@@ -53,13 +47,8 @@
             transition: all 0.3s ease;
             text-decoration: none;
         }
-        .btn:hover {
-            background: #b58a3a;
-            transform: translateY(-2px);
-        }
-        .hidden {
-            display: none !important;
-        }
+        .btn:hover { background: #b58a3a; transform: translateY(-2px); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -71,9 +60,8 @@
         <a href="/admin/" class="btn hidden" id="backBtn" style="background:#6c7a72;">← Back to Login</a>
     </div>
 
-    <!-- Load Decap CMS ONLY - NO Identity Widget -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js">
-    </script>
+    <!-- Use Decap CMS v2.10.2 (stable version) -->
+    <script src="https://unpkg.com/decap-cms@2.10.2/dist/decap-cms.js"></script>
     <script>
         (function() {
             const statusEl = document.getElementById('status');
@@ -94,19 +82,18 @@
                         });
                         statusEl.textContent = '✅ CMS initialized successfully!';
                         document.querySelector('.loading').innerHTML = `
-                                <div style="text-align:center;">
-                                    <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
-                                    <div style="font-size:1.2rem;color:#1a3a2a;font-weight:600;">CMS is ready!</div>
-                                    <div style="font-size:0.9rem;color:#4d5f55;margin-top:8px;">The dashboard should appear shortly.</div>
-                                </div>
-                            `;
+                            <div style="text-align:center;">
+                                <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
+                                <div style="font-size:1.2rem;color:#1a3a2a;font-weight:600;">CMS is ready!</div>
+                                <div style="font-size:0.9rem;color:#4d5f55;margin-top:8px;">The dashboard should appear shortly.</div>
+                            </div>
+                        `;
                         return true;
                     }
                     return false;
                 } catch (e) {
                     console.error('CMS init error:', e);
-                    statusEl.innerHTML = '<span class="error">❌ CMS initialization failed: ' + e.message +
-                        '</span>';
+                    statusEl.innerHTML = '<span class="error">❌ CMS initialization failed: ' + e.message + '</span>';
                     return false;
                 }
             }
@@ -121,8 +108,7 @@
                 }
 
                 if (attempts >= maxAttempts) {
-                    statusEl.innerHTML =
-                        '<span class="error">❌ CMS failed to load after multiple attempts.</span>';
+                    statusEl.innerHTML = '<span class="error">❌ CMS failed to load after multiple attempts.</span>';
                     retryBtn.classList.remove('hidden');
                     backBtn.classList.remove('hidden');
                     retryBtn.onclick = function() {
@@ -141,8 +127,7 @@
                     if (window.netlifyIdentity) {
                         const user = window.netlifyIdentity.currentUser();
                         if (!user) {
-                            statusEl.innerHTML =
-                                '<span class="error">Not authenticated. Redirecting to login...</span>';
+                            statusEl.innerHTML = '<span class="error">Not authenticated. Redirecting to login...</span>';
                             setTimeout(function() {
                                 window.location.href = '/admin/';
                             }, 1500);
