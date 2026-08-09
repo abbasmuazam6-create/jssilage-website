@@ -3,13 +3,20 @@ backend:
   branch: main
   repo: abbasmuazam6-create/jssilage-website
 
+# Media folder where images are stored
 media_folder: "images"
 public_folder: "/images"
 
+# Media library configuration
 media_library:
   name: uploadcare
   config:
     publicKey: "demopublickey"
+    multiple: true
+    previewStep: true
+    imagesOnly: true
+    crop: "16:9"
+    tabs: "file url"
 
 collections:
   - name: "settings"
@@ -40,7 +47,19 @@ collections:
               - { label: "Phone", name: "phone", widget: "string", required: false }
               - { label: "WhatsApp", name: "whatsapp", widget: "string", required: false }
               - { label: "Address", name: "address", widget: "string" }
-              - { label: "Location Image", name: "image", widget: "image", required: false }
+              - { 
+                  label: "Location Image", 
+                  name: "image", 
+                  widget: "image", 
+                  required: false,
+                  media_library: {
+                    config: {
+                      multiple: false,
+                      previewStep: true,
+                      crop: "4:3"
+                    }
+                  }
+                }
 
           - label: "Price List"
             name: "prices"
@@ -60,3 +79,16 @@ collections:
               - { label: "Date (e.g., Aug 10)", name: "date", widget: "string" }
               - { label: "Content", name: "content", widget: "text" }
               - { label: "Tag", name: "tag", widget: "string" }
+              - { 
+                  label: "News Image", 
+                  name: "image", 
+                  widget: "image", 
+                  required: false,
+                  media_library: {
+                    config: {
+                      multiple: false,
+                      previewStep: true,
+                      crop: "16:9"
+                    }
+                  }
+                }

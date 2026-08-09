@@ -102,7 +102,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* CMS container (hidden until needed) */
         #cmsContainer {
             width: 100%;
             height: 100vh;
@@ -110,6 +109,10 @@
         }
         #cmsContainer.visible {
             display: block;
+        }
+        /* Hide the default browse button to let Uploadcare handle it */
+        .nc-image-widget-browse {
+            display: none !important;
         }
     </style>
 </head>
@@ -142,26 +145,32 @@
             const loginMessage = document.getElementById('loginMessage');
             const loginStatus = document.getElementById('loginStatus');
 
-            // --- The deep link URL for settings ---
             const SETTINGS_HASH = '#/collections/settings/entries/general';
 
-            // --- Function: Show CMS with deep link ---
             function showCMSWithDeepLink() {
-                // Hide login overlay
                 loginOverlay.classList.add('hidden');
-
-                // Show CMS container
                 cmsContainer.classList.add('visible');
 
-                // Initialize CMS if not already initialized
                 if (window.CMS && !window.CMS._initialized) {
                     try {
+                        // Load the CMS with media library support
                         window.CMS.init({
                             config: {
                                 backend: {
                                     name: 'git-gateway',
                                     branch: 'main',
                                     repo: 'abbasmuazam6-create/jssilage-website'
+                                },
+                                // Media library configuration
+                                media_library: {
+                                    name: 'uploadcare',
+                                    config: {
+                                        publicKey: 'demopublickey',
+                                        multiple: true,
+                                        previewStep: true,
+                                        imagesOnly: true,
+                                        tabs: 'file url'
+                                    }
                                 }
                             }
                         });
@@ -171,19 +180,16 @@
                     }
                 }
 
-                // Remove Identity Widget from DOM to prevent conflicts
                 const identityWidget = document.querySelector('.netlify-identity-widget');
                 if (identityWidget && identityWidget.parentNode) {
                     identityWidget.parentNode.removeChild(identityWidget);
                 }
 
-                // Navigate to the settings page
                 if (window.location.hash !== SETTINGS_HASH) {
                     window.location.hash = SETTINGS_HASH;
                 }
             }
 
-            // --- Function: Show login overlay ---
             function showLogin() {
                 loginOverlay.classList.remove('hidden');
                 cmsContainer.classList.remove('visible');
@@ -196,7 +202,6 @@
                 loginStatus.textContent = '';
             }
 
-            // --- Function: Show logged in state ---
             function showLoggedIn(user) {
                 loginMessage.textContent = '✅ Logged in as ' + user.email;
                 loginBtn.textContent = '📂 Open Settings';
@@ -207,11 +212,9 @@
                 loginStatus.textContent = 'Click "Open Settings" to edit your data.';
             }
 
-            // --- Handle Identity Events ---
             netlifyIdentity.on('init', function(user) {
                 if (user) {
                     showLoggedIn(user);
-                    // Auto-enter if flag is present or if we're on the settings path
                     if (window.location.hash.includes('collections/settings') ||
                         window.location.hash.includes('auto-enter')) {
                         showCMSWithDeepLink();
@@ -223,7 +226,6 @@
 
             netlifyIdentity.on('login', function(user) {
                 showLoggedIn(user);
-                // Auto-enter after login
                 setTimeout(function() {
                     showCMSWithDeepLink();
                 }, 500);
@@ -233,11 +235,9 @@
                 showLogin();
             });
 
-            // --- Check initial state ---
             const user = netlifyIdentity.currentUser();
             if (user) {
                 showLoggedIn(user);
-                // If we're on the settings path, auto-enter
                 if (window.location.hash.includes('collections/settings')) {
                     showCMSWithDeepLink();
                 }
@@ -245,34 +245,12 @@
                 showLogin();
             }
 
-            // --- Auto-open popup if there's a token ---
             if (window.location.hash.includes('invite_token') ||
                 window.location.hash.includes('recovery_token') ||
                 window.location.hash.includes('confirmation_token')) {
                 setTimeout(function() {
                     netlifyIdentity.open('login');
                 }, 500);
-            }
-
-            // --- If the CMS is already loaded (via script), handle it ---
-            if (window.CMS) {
-                // Ensure the CMS is initialized and ready
-                if (!window.CMS._initialized) {
-                    try {
-                        window.CMS.init({
-                            config: {
-                                backend: {
-                                    name: 'git-gateway',
-                                    branch: 'main',
-                                    repo: 'abbasmuazam6-create/jssilage-website'
-                                }
-                            }
-                        });
-                        window.CMS._initialized = true;
-                    } catch (e) {
-                        console.error('CMS init error:', e);
-                    }
-                }
             }
         })();
     </script>
