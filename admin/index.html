@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JS Silage Admin Login</title>
+    <title>JS Silage Admin</title>
+    <!-- Load Netlify Identity Widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
         * {
@@ -13,13 +14,28 @@
         }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
+            background: #f2f6f3;
+        }
+
+        /* --- Login Overlay --- */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(242, 246, 243, 0.95);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: #f2f6f3;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
         }
-        .container {
+        #loginOverlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .login-box {
             text-align: center;
             background: white;
             padding: 48px 40px;
@@ -28,16 +44,16 @@
             max-width: 400px;
             width: 100%;
         }
-        .logo {
+        .login-box .logo {
             max-width: 100px;
             margin-bottom: 20px;
         }
-        h2 {
+        .login-box h2 {
             color: #1a3a2a;
             margin-bottom: 8px;
             font-weight: 700;
         }
-        p {
+        .login-box p {
             color: #4d5f55;
             margin-bottom: 24px;
             font-size: 0.95rem;
@@ -62,10 +78,11 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
-        .status {
+        .status-text {
             margin-top: 16px;
             font-size: 0.9rem;
             color: #4d5f55;
+            min-height: 24px;
         }
         .spinner {
             display: inline-block;
@@ -79,80 +96,171 @@
             vertical-align: middle;
         }
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- CMS Container --- */
+        #cmsContainer {
+            width: 100%;
+            height: 100vh;
+            display: none;
+        }
+        #cmsContainer.visible {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <img src="/images/JS Final logo.jpeg" alt="JS Silage Logo" class="logo" />
-        <h2>Admin Login</h2>
-        <p id="message">Loading...</p>
-        <button class="btn" id="mainBtn" disabled>Please wait...</button>
-        <div class="status" id="status"></div>
+
+    <!-- ===== LOGIN OVERLAY ===== -->
+    <div id="loginOverlay">
+        <div class="login-box">
+            <img src="/images/JS Final logo.jpeg" alt="JS Silage Logo" class="logo" />
+            <h2>Admin Login</h2>
+            <p id="loginMessage">Click the button below to log in.</p>
+            <button class="btn" id="loginBtn">🔐 Login / Sign Up</button>
+            <div class="status-text" id="loginStatus"></div>
+        </div>
     </div>
+
+    <!-- ===== CMS CONTAINER ===== -->
+    <div id="cmsContainer"></div>
+
+    <!-- ===== DECAP CMS SCRIPT ===== -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <script>
         (function() {
             const netlifyIdentity = window.netlifyIdentity;
-            const mainBtn = document.getElementById('mainBtn');
-            const messageEl = document.getElementById('message');
-            const statusEl = document.getElementById('status');
+            const loginOverlay = document.getElementById('loginOverlay');
+            const cmsContainer = document.getElementById('cmsContainer');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginMessage = document.getElementById('loginMessage');
+            const loginStatus = document.getElementById('loginStatus');
 
-            function showLoggedIn(user) {
-                messageEl.textContent = '✅ Logged in as ' + user.email;
-                mainBtn.textContent = '📂 Enter CMS';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    window.location.href = '/admin/cms.html';
-                };
-                statusEl.textContent = 'Click "Enter CMS" to start editing.';
+            // --- Function: Hide login and show CMS ---
+            function showCMS() {
+                // Hide the login overlay
+                loginOverlay.classList.add('hidden');
+                // Show the CMS container
+                cmsContainer.classList.add('visible');
+                // Initialize CMS if not already initialized
+                if (window.CMS && !window.CMS._initialized) {
+                    try {
+                        window.CMS.init({
+                            config: {
+                                backend: {
+                                    name: 'git-gateway',
+                                    branch: 'main',
+                                    repo: 'abbasmuazam6-create/jssilage-website'
+                                }
+                            }
+                        });
+                        window.CMS._initialized = true;
+                    } catch (e) {
+                        console.error('CMS init error:', e);
+                    }
+                }
             }
 
-            function showLoggedOut() {
-                messageEl.textContent = 'Click the button to log in.';
-                mainBtn.textContent = '🔐 Login / Sign Up';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
+            // --- Function: Show login overlay ---
+            function showLogin() {
+                loginOverlay.classList.remove('hidden');
+                cmsContainer.classList.remove('visible');
+                loginMessage.textContent = 'Click the button below to log in.';
+                loginBtn.textContent = '🔐 Login / Sign Up';
+                loginBtn.disabled = false;
+                loginBtn.onclick = function() {
                     netlifyIdentity.open('login');
                 };
-                statusEl.textContent = '';
+                loginStatus.textContent = '';
             }
 
+            // --- Function: Show "Logging in..." state ---
+            function showLoggingIn() {
+                loginMessage.innerHTML = '<span class="spinner"></span> Logging in...';
+                loginBtn.disabled = true;
+                loginStatus.textContent = 'Please wait...';
+            }
+
+            // --- Function: Show "Logged in" state ---
+            function showLoggedIn(user) {
+                loginMessage.textContent = '✅ Logged in as ' + user.email;
+                loginBtn.textContent = '📂 Enter CMS';
+                loginBtn.disabled = false;
+                loginBtn.onclick = function() {
+                    showCMS();
+                };
+                loginStatus.textContent = 'Click "Enter CMS" to start editing.';
+                // If the user is already logged in, we can auto-show the CMS
+                // But we let the user click the button to avoid confusion
+            }
+
+            // --- Handle Identity Events ---
             netlifyIdentity.on('init', function(user) {
                 if (user) {
                     showLoggedIn(user);
+                    // If we have a user and the URL has a flag to auto-enter
+                    if (window.location.hash.includes('auto-enter')) {
+                        showCMS();
+                    }
                 } else {
-                    showLoggedOut();
+                    showLogin();
                 }
             });
 
             netlifyIdentity.on('login', function(user) {
                 showLoggedIn(user);
+                // Auto-enter CMS after successful login
+                setTimeout(function() {
+                    showCMS();
+                }, 500);
             });
 
             netlifyIdentity.on('logout', function() {
-                showLoggedOut();
+                showLogin();
+                // Reload the page to clear any CMS state
+                window.location.reload();
             });
 
+            // --- Check initial state ---
             const user = netlifyIdentity.currentUser();
             if (user) {
                 showLoggedIn(user);
+                // Auto-enter if we have a user and a flag
+                if (window.location.hash.includes('auto-enter')) {
+                    showCMS();
+                }
             } else {
-                showLoggedOut();
+                showLogin();
             }
 
+            // --- Auto-open popup if there's a token in the URL ---
             if (window.location.hash.includes('invite_token') ||
                 window.location.hash.includes('recovery_token') ||
                 window.location.hash.includes('confirmation_token')) {
                 setTimeout(function() {
                     netlifyIdentity.open('login');
                 }, 500);
+            }
+
+            // --- If CMS is already loaded and we have a user, show CMS ---
+            if (window.CMS && user) {
+                showCMS();
+            }
+
+            // --- If the user clicks "Enter CMS", show it ---
+            // The button already calls showCMS()
+
+            // --- Also, if the user is already logged in and visits the page,
+            // we could auto-show the CMS, but we'll let them click the button.
+            // To auto-enter, add ?auto-enter to the URL:
+            // https://jssilage.netlify.app/admin/?auto-enter
+            if (window.location.search.includes('auto-enter')) {
+                if (user) {
+                    showCMS();
+                }
             }
         })();
     </script>
