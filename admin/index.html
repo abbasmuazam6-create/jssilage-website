@@ -3,26 +3,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JS Silage Admin Login</title>
+    <title>JS Silage Admin</title>
     <!-- Load Netlify Identity Widget -->
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
             background: #f2f6f3;
+            margin: 0;
         }
         .container {
             text-align: center;
             background: white;
             padding: 48px 40px;
-            border-radius: 20px;
+            border-radius: 24px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
         }
         .logo {
@@ -55,91 +60,180 @@
             background: #b58a3a;
             transform: translateY(-2px);
         }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
         .status {
             margin-top: 16px;
             font-size: 0.9rem;
             color: #4d5f55;
             min-height: 24px;
         }
-        .error {
-            color: #b33c3c;
+        .hidden {
+            display: none !important;
+        }
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #c9a04e;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="app">
         <img src="/images/JS Final logo.jpeg" alt="JS Silage Logo" class="logo" />
         <h2>Admin Panel</h2>
-        <p>Click the button below to log in or create your account.</p>
-        <button class="btn" id="loginBtn">🔐 Login / Sign Up</button>
-        <div class="status" id="status">Ready</div>
+        <p id="message">Loading...</p>
+        <button class="btn" id="mainBtn" disabled>Please wait...</button>
+        <div class="status" id="status"></div>
     </div>
 
     <script>
-        // Initialize Netlify Identity Widget
+        // --- CONFIGURATION ---
+        const CMS_SCRIPT_URL = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+
+        // --- DOM Elements ---
+        const messageEl = document.getElementById('message');
+        const mainBtn = document.getElementById('mainBtn');
+        const statusEl = document.getElementById('status');
+
+        // --- Netlify Identity Widget ---
         const netlifyIdentity = window.netlifyIdentity;
 
-        // Update status when user logs in
-        netlifyIdentity.on('init', function(user) {
-            if (user) {
-                document.getElementById('status').innerHTML = '✅ Logged in as ' + user.email;
-                document.getElementById('loginBtn').textContent = '📂 Open CMS';
-            } else {
-                document.getElementById('status').innerHTML = '🔓 Click the button to continue';
+        // --- Helper: Load Decap CMS ---
+        function loadDecapCMS() {
+            // Check if Decap CMS is already loaded
+            if (window.CMS) {
+                statusEl.innerHTML = '✅ CMS already loaded.';
+                mainBtn.textContent = '📂 Open CMS';
+                mainBtn.disabled = false;
+                mainBtn.onclick = function() {
+                    // Redirect to the CMS dashboard
+                    window.location.href = '/admin/index.html?cms=true';
+                };
+                return;
             }
-        });
 
-        netlifyIdentity.on('login', function(user) {
-            document.getElementById('status').innerHTML = '✅ Logged in as ' + user.email;
-            document.getElementById('loginBtn').textContent = '📂 Open CMS';
-            // Redirect to Decap CMS after a short delay
-            setTimeout(function() {
-                window.location.href = '/admin/index.html?logged-in=true';
-            }, 500);
-        });
+            statusEl.innerHTML = '⏳ Loading CMS...';
+            mainBtn.textContent = 'Loading...';
+            mainBtn.disabled = true;
 
-        netlifyIdentity.on('logout', function() {
-            document.getElementById('status').innerHTML = '🔓 Click the button to continue';
-            document.getElementById('loginBtn').textContent = '🔐 Login / Sign Up';
-        });
+            // Load Decap CMS script
+            const script = document.createElement('script');
+            script.src = CMS_SCRIPT_URL;
+            script.async = true;
+            script.onload = function() {
+                statusEl.innerHTML = '✅ CMS loaded successfully!';
+                mainBtn.textContent = '📂 Open CMS';
+                mainBtn.disabled = false;
+                mainBtn.onclick = function() {
+                    window.location.href = '/admin/index.html?cms=true';
+                };
+            };
+            script.onerror = function() {
+                statusEl.innerHTML = '❌ Failed to load CMS. Please refresh.';
+                mainBtn.textContent = '🔄 Retry';
+                mainBtn.disabled = false;
+                mainBtn.onclick = function() {
+                    location.reload();
+                };
+            };
+            document.head.appendChild(script);
+        }
 
-        // Button click handler
-        document.getElementById('loginBtn').addEventListener('click', function() {
+        // --- Handle Login Flow ---
+        function handleLogin(user) {
+            if (!user) {
+                // User is logged out
+                messageEl.textContent = 'Click the button below to log in.';
+                mainBtn.textContent = '🔐 Login / Sign Up';
+                mainBtn.disabled = false;
+                mainBtn.onclick = function() {
+                    netlifyIdentity.open('login');
+                };
+                statusEl.textContent = '';
+                return;
+            }
+
+            // User is logged in
+            messageEl.textContent = '✅ Logged in as ' + user.email;
+            mainBtn.textContent = '📂 Open CMS';
+            mainBtn.disabled = false;
+            mainBtn.onclick = function() {
+                // If CMS is loaded, open it; otherwise, load it first
+                if (window.CMS) {
+                    window.location.href = '/admin/index.html?cms=true';
+                } else {
+                    loadDecapCMS();
+                }
+            };
+            statusEl.textContent = '✅ Identity authenticated.';
+
+            // If we're already on the ?cms=true URL, load CMS directly
+            if (window.location.search.includes('cms=true')) {
+                loadDecapCMS();
+            }
+        }
+
+        // --- Initialize ---
+        function init() {
+            // Check if user is already logged in
             const user = netlifyIdentity.currentUser();
             if (user) {
-                // If already logged in, go to Decap CMS
-                window.location.href = '/admin/index.html?logged-in=true';
+                handleLogin(user);
             } else {
-                // Open the Identity widget popup
-                netlifyIdentity.open('login');
+                // Wait for identity to initialize
+                messageEl.textContent = 'Waiting for authentication...';
+                mainBtn.textContent = 'Loading...';
+                mainBtn.disabled = true;
             }
-        });
 
-        // Check if user is already logged in on page load
-        if (netlifyIdentity.currentUser()) {
-            document.getElementById('status').innerHTML = '✅ Logged in as ' + netlifyIdentity.currentUser().email;
-            document.getElementById('loginBtn').textContent = '📂 Open CMS';
-        }
+            // Listen for login events
+            netlifyIdentity.on('login', function(user) {
+                handleLogin(user);
+            });
 
-        // If there's an invite or recovery token in the URL, open the popup automatically
-        if (window.location.hash.includes('invite_token') || window.location.hash.includes('recovery_token')) {
-            setTimeout(function() {
-                netlifyIdentity.open('login');
-            }, 500);
-        }
+            netlifyIdentity.on('logout', function() {
+                handleLogin(null);
+            });
 
-        // If the URL has ?logged-in=true, try to load Decap CMS
-        if (window.location.search.includes('logged-in=true')) {
-            if (netlifyIdentity.currentUser()) {
-                // Load Decap CMS
-                const script = document.createElement('script');
-                script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-                document.body.appendChild(script);
-            } else {
-                // Not logged in, redirect back
-                window.location.href = '/admin/';
+            netlifyIdentity.on('init', function(user) {
+                if (user) {
+                    handleLogin(user);
+                } else {
+                    // No user, show login button
+                    messageEl.textContent = 'Click the button below to log in.';
+                    mainBtn.textContent = '🔐 Login / Sign Up';
+                    mainBtn.disabled = false;
+                    mainBtn.onclick = function() {
+                        netlifyIdentity.open('login');
+                    };
+                    statusEl.textContent = '';
+                }
+            });
+
+            // If there's an invite or recovery token, open the popup automatically
+            if (window.location.hash.includes('invite_token') || window.location.hash.includes('recovery_token') || window.location.hash.includes('confirmation_token')) {
+                setTimeout(function() {
+                    netlifyIdentity.open('login');
+                }, 500);
             }
         }
+
+        // --- Start ---
+        init();
     </script>
 </body>
 </html>
