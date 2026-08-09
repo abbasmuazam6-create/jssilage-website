@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JS Silage Admin</title>
-    <!-- Load Netlify Identity Widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
         * {
@@ -99,16 +98,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        /* --- CMS Container --- */
-        #cmsContainer {
-            width: 100%;
-            height: 100vh;
-            display: none;
-        }
-        #cmsContainer.visible {
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -124,9 +113,6 @@
         </div>
     </div>
 
-    <!-- ===== CMS CONTAINER ===== -->
-    <div id="cmsContainer"></div>
-
     <!-- ===== DECAP CMS SCRIPT ===== -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
@@ -134,17 +120,28 @@
         (function() {
             const netlifyIdentity = window.netlifyIdentity;
             const loginOverlay = document.getElementById('loginOverlay');
-            const cmsContainer = document.getElementById('cmsContainer');
             const loginBtn = document.getElementById('loginBtn');
             const loginMessage = document.getElementById('loginMessage');
             const loginStatus = document.getElementById('loginStatus');
 
-            // --- Function: Hide login and show CMS ---
-            function showCMS() {
+            // --- Function: Hide login overlay and destroy Identity ---
+            function hideLoginAndDestroyIdentity() {
                 // Hide the login overlay
                 loginOverlay.classList.add('hidden');
-                // Show the CMS container
-                cmsContainer.classList.add('visible');
+
+                // Completely remove the Identity Widget from the DOM
+                // Find and remove the Identity Widget's container
+                const identityWidget = document.querySelector('.netlify-identity-widget');
+                if (identityWidget) {
+                    identityWidget.parentNode.removeChild(identityWidget);
+                }
+
+                // Remove any leftover Identity Widget styles or scripts
+                const identityStyles = document.querySelector('style[data-netlify-identity-widget]');
+                if (identityStyles) {
+                    identityStyles.parentNode.removeChild(identityStyles);
+                }
+
                 // Initialize CMS if not already initialized
                 if (window.CMS && !window.CMS._initialized) {
                     try {
@@ -162,12 +159,14 @@
                         console.error('CMS init error:', e);
                     }
                 }
+
+                // Remove the login overlay completely from the DOM
+                loginOverlay.parentNode.removeChild(loginOverlay);
             }
 
             // --- Function: Show login overlay ---
             function showLogin() {
                 loginOverlay.classList.remove('hidden');
-                cmsContainer.classList.remove('visible');
                 loginMessage.textContent = 'Click the button below to log in.';
                 loginBtn.textContent = '🔐 Login / Sign Up';
                 loginBtn.disabled = false;
@@ -177,33 +176,25 @@
                 loginStatus.textContent = '';
             }
 
-            // --- Function: Show "Logging in..." state ---
-            function showLoggingIn() {
-                loginMessage.innerHTML = '<span class="spinner"></span> Logging in...';
-                loginBtn.disabled = true;
-                loginStatus.textContent = 'Please wait...';
-            }
-
             // --- Function: Show "Logged in" state ---
             function showLoggedIn(user) {
                 loginMessage.textContent = '✅ Logged in as ' + user.email;
                 loginBtn.textContent = '📂 Enter CMS';
                 loginBtn.disabled = false;
                 loginBtn.onclick = function() {
-                    showCMS();
+                    // Hide login, destroy Identity, and show CMS
+                    hideLoginAndDestroyIdentity();
                 };
                 loginStatus.textContent = 'Click "Enter CMS" to start editing.';
-                // If the user is already logged in, we can auto-show the CMS
-                // But we let the user click the button to avoid confusion
             }
 
             // --- Handle Identity Events ---
             netlifyIdentity.on('init', function(user) {
                 if (user) {
                     showLoggedIn(user);
-                    // If we have a user and the URL has a flag to auto-enter
+                    // Auto-enter if flag is present
                     if (window.location.hash.includes('auto-enter')) {
-                        showCMS();
+                        hideLoginAndDestroyIdentity();
                     }
                 } else {
                     showLogin();
@@ -212,31 +203,21 @@
 
             netlifyIdentity.on('login', function(user) {
                 showLoggedIn(user);
-                // Auto-enter CMS after successful login
-                setTimeout(function() {
-                    showCMS();
-                }, 500);
             });
 
             netlifyIdentity.on('logout', function() {
                 showLogin();
-                // Reload the page to clear any CMS state
-                window.location.reload();
             });
 
             // --- Check initial state ---
             const user = netlifyIdentity.currentUser();
             if (user) {
                 showLoggedIn(user);
-                // Auto-enter if we have a user and a flag
-                if (window.location.hash.includes('auto-enter')) {
-                    showCMS();
-                }
             } else {
                 showLogin();
             }
 
-            // --- Auto-open popup if there's a token in the URL ---
+            // --- Auto-open popup if there's a token ---
             if (window.location.hash.includes('invite_token') ||
                 window.location.hash.includes('recovery_token') ||
                 window.location.hash.includes('confirmation_token')) {
@@ -245,21 +226,10 @@
                 }, 500);
             }
 
-            // --- If CMS is already loaded and we have a user, show CMS ---
-            if (window.CMS && user) {
-                showCMS();
-            }
-
-            // --- If the user clicks "Enter CMS", show it ---
-            // The button already calls showCMS()
-
-            // --- Also, if the user is already logged in and visits the page,
-            // we could auto-show the CMS, but we'll let them click the button.
-            // To auto-enter, add ?auto-enter to the URL:
-            // https://jssilage.netlify.app/admin/?auto-enter
+            // --- Auto-enter if URL has ?auto-enter ---
             if (window.location.search.includes('auto-enter')) {
                 if (user) {
-                    showCMS();
+                    hideLoginAndDestroyIdentity();
                 }
             }
         })();
