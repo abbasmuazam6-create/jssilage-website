@@ -77,6 +77,12 @@
       "contact": "Muazam abbas",
       "phone": "0333333333",
       "address": "sherkot"
+    },
+    {
+      "is_main": false,
+      "city": "kacha paka",
+      "contact": "maisam",
+      "address": "sherkot"
     }
   ],
   "prices": [
