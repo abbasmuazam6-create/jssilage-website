@@ -14,6 +14,10 @@
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             background: #f2f6f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         /* --- Login Overlay --- */
@@ -113,9 +117,6 @@
         </div>
     </div>
 
-    <!-- ===== DECAP CMS SCRIPT ===== -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
     <script>
         (function() {
             const netlifyIdentity = window.netlifyIdentity;
@@ -124,44 +125,22 @@
             const loginMessage = document.getElementById('loginMessage');
             const loginStatus = document.getElementById('loginStatus');
 
-            // --- Function: Hide login overlay and destroy Identity ---
-            function hideLoginAndDestroyIdentity() {
+            // --- DIRECT URL TO GENERAL SETTINGS (SKIPS DASHBOARD) ---
+            const SETTINGS_URL = '/admin/#/collections/settings/entries/general';
+
+            // --- Function: Redirect directly to settings ---
+            function goToSettings() {
                 // Hide the login overlay
                 loginOverlay.classList.add('hidden');
 
-                // Completely remove the Identity Widget from the DOM
-                // Find and remove the Identity Widget's container
+                // Remove Identity Widget from DOM
                 const identityWidget = document.querySelector('.netlify-identity-widget');
-                if (identityWidget) {
+                if (identityWidget && identityWidget.parentNode) {
                     identityWidget.parentNode.removeChild(identityWidget);
                 }
 
-                // Remove any leftover Identity Widget styles or scripts
-                const identityStyles = document.querySelector('style[data-netlify-identity-widget]');
-                if (identityStyles) {
-                    identityStyles.parentNode.removeChild(identityStyles);
-                }
-
-                // Initialize CMS if not already initialized
-                if (window.CMS && !window.CMS._initialized) {
-                    try {
-                        window.CMS.init({
-                            config: {
-                                backend: {
-                                    name: 'git-gateway',
-                                    branch: 'main',
-                                    repo: 'abbasmuazam6-create/jssilage-website'
-                                }
-                            }
-                        });
-                        window.CMS._initialized = true;
-                    } catch (e) {
-                        console.error('CMS init error:', e);
-                    }
-                }
-
-                // Remove the login overlay completely from the DOM
-                loginOverlay.parentNode.removeChild(loginOverlay);
+                // Redirect directly to settings page
+                window.location.href = SETTINGS_URL;
             }
 
             // --- Function: Show login overlay ---
@@ -179,13 +158,12 @@
             // --- Function: Show "Logged in" state ---
             function showLoggedIn(user) {
                 loginMessage.textContent = '✅ Logged in as ' + user.email;
-                loginBtn.textContent = '📂 Enter CMS';
+                loginBtn.textContent = '📂 Open Settings';
                 loginBtn.disabled = false;
                 loginBtn.onclick = function() {
-                    // Hide login, destroy Identity, and show CMS
-                    hideLoginAndDestroyIdentity();
+                    goToSettings();
                 };
-                loginStatus.textContent = 'Click "Enter CMS" to start editing.';
+                loginStatus.textContent = 'Click "Open Settings" to edit your data.';
             }
 
             // --- Handle Identity Events ---
@@ -194,7 +172,7 @@
                     showLoggedIn(user);
                     // Auto-enter if flag is present
                     if (window.location.hash.includes('auto-enter')) {
-                        hideLoginAndDestroyIdentity();
+                        goToSettings();
                     }
                 } else {
                     showLogin();
@@ -203,6 +181,10 @@
 
             netlifyIdentity.on('login', function(user) {
                 showLoggedIn(user);
+                // Auto-enter after login
+                setTimeout(function() {
+                    goToSettings();
+                }, 500);
             });
 
             netlifyIdentity.on('logout', function() {
@@ -213,6 +195,10 @@
             const user = netlifyIdentity.currentUser();
             if (user) {
                 showLoggedIn(user);
+                // Auto-enter if URL has auto-enter
+                if (window.location.search.includes('auto-enter')) {
+                    goToSettings();
+                }
             } else {
                 showLogin();
             }
@@ -224,13 +210,6 @@
                 setTimeout(function() {
                     netlifyIdentity.open('login');
                 }, 500);
-            }
-
-            // --- Auto-enter if URL has ?auto-enter ---
-            if (window.location.search.includes('auto-enter')) {
-                if (user) {
-                    hideLoginAndDestroyIdentity();
-                }
             }
         })();
     </script>
