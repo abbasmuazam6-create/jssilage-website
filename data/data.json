@@ -1,28 +1,91 @@
 {
-  "hero": {
-    "badge": "Pakistan's Trusted Agri-Brand",
-    "title": "JS Silage <span>&amp;</span> Wanda Factory",
-    "subtitle": "Premium silage &amp; agricultural solutions — serving farmers across Pakistan."
+  "contact": {
+    "name": "JS Silage & Wanda Factory",
+    "tagline": "JS Silage & Wanda Factory — Quality silage and agricultural solutions since 2010.",
+    "phone": "+92 300 1234567",
+    "whatsapp": "923001234567",
+    "email": "info@jssilage.com",
+    "address": "Main Factory Road, Hasilpur, Punjab"
   },
-  "about": {
-    "title": "About Our Factory",
-    "subtitle": "Based in <strong>Hasilpur</strong>, we are a family-owned business committed to quality.",
-    "description": "<strong>JS Silage &amp; Wanda Factory</strong> has been at the heart of Pakistan's agricultural community for over a decade. Our state-of-the-art facility produces premium silage in <strong>Open, Baled, and Bags</strong> to meet the diverse needs of livestock farmers nationwide.",
-    "description2": "In addition, we proudly offer <strong>Wanda</strong> — a specialized feed supplement designed for enhanced animal nutrition and health.",
-    "mission": "To provide top-tier silage that maximizes livestock productivity.",
-    "vision": "To be Pakistan's most trusted agricultural partner.",
-    "stats": [
-      { "number": "10+", "label": "Years of Excellence" },
-      { "number": "7", "label": "Sales Points" },
-      { "number": "100%", "label": "Farmer Trust" }
-    ],
-    "owner_name": "Junaid",
-    "owner_title": "Founder &amp; Managing Partner",
-    "owner_image": "images/junaid.jpg"
+  "wanda": {
+    "title": "Wanda <span>Premium Supplement</span>",
+    "description": "A unique, nutrient-rich feed supplement formulated to boost milk production, weight gain, and overall animal health.",
+    "image": "images/product-wanda.jpg",
+    "badge": "Premium Product",
+    "tag": "Powder &amp; Pellets Available",
+    "benefits": [
+      {
+        "icon": "cow",
+        "text": "Boosts Milk Yield <strong>+25%</strong>"
+      },
+      {
+        "icon": "shield-alt",
+        "text": "Improves Immunity"
+      },
+      {
+        "icon": "leaf",
+        "text": "100% Natural Ingredients"
+      }
+    ]
   },
   "products": {
     "title": "Our Products",
     "subtitle": "High-quality silage in three forms, plus our signature Wanda supplement."
+  },
+  "prices": [
+    {
+      "name": "Silage",
+      "unit": "Open (Per Ton)",
+      "price": "25,000",
+      "badge": "Bulk",
+      "is_wanda": false
+    },
+    {
+      "name": "Silage",
+      "unit": "Baled (Per Bale)",
+      "price": "1,200",
+      "badge": "Best Seller",
+      "is_wanda": false
+    },
+    {
+      "name": "Silage",
+      "unit": "Bagged (Per 40kg Bag)",
+      "price": "1,000",
+      "badge": "Retail",
+      "is_wanda": false
+    },
+    {
+      "name": "Wanda",
+      "unit": "Supplement (Per 20kg Bag)",
+      "price": "3,500",
+      "badge": "Premium",
+      "is_wanda": true
+    }
+  ],
+  "about": {
+    "vision": "To be Pakistan's most trusted agricultural partner.",
+    "mission": "To provide top-tier silage that maximizes livestock productivity.",
+    "owner_title": "Founder &amp; Managing Partner",
+    "owner_image": "images/junaid.jpg",
+    "description2": "In addition, we proudly offer <strong>Wanda</strong> — a specialized feed supplement designed for enhanced animal nutrition and health.",
+    "owner_name": "Junaid",
+    "subtitle": "Based in <strong>Hasilpur</strong>, we are a family-owned business committed to quality.",
+    "title": "About Our Factory",
+    "description": "<strong>JS Silage &amp; Wanda Factory</strong> has been at the heart of Pakistan's agricultural community for over a decade. Our state-of-the-art facility produces premium silage in <strong>Open, Baled, and Bags</strong> to meet the diverse needs of livestock farmers nationwide.",
+    "stats": [
+      {
+        "number": "10+",
+        "label": "Years of Excellence"
+      },
+      {
+        "number": "7",
+        "label": "Sales Points"
+      },
+      {
+        "number": "100%",
+        "label": "Farmer Trust"
+      }
+    ]
   },
   "product_items": [
     {
@@ -30,7 +93,11 @@
       "description": "Loose, high-moisture silage loaded directly from our silos. Ideal for large-scale dairy farms.",
       "image": "images/product-open.jpg",
       "badge": "Bulk Supply",
-      "features": ["High Protein", "85% Moisture", "6 Months Shelf Life"],
+      "features": [
+        "High Protein",
+        "85% Moisture",
+        "6 Months Shelf Life"
+      ],
       "tag": "Per Ton",
       "tag_icon": "weight-scale"
     },
@@ -39,7 +106,11 @@
       "description": "Wrapped, fermented bales with excellent preservation. Easy to handle, store, and transport.",
       "image": "images/product-baled.jpg",
       "badge": "Best Seller",
-      "features": ["98% Preservation", "Easy Transport", "12 Months Shelf Life"],
+      "features": [
+        "98% Preservation",
+        "Easy Transport",
+        "12 Months Shelf Life"
+      ],
       "tag": "Per Bale",
       "tag_icon": "circle"
     },
@@ -48,30 +119,39 @@
       "description": "Convenient, sealed bags with consistent quality. Perfect for small to medium farms.",
       "image": "images/product-bags.jpg",
       "badge": "Retail Ready",
-      "features": ["Ready to Use", "Zero Waste", "9 Months Shelf Life"],
+      "features": [
+        "Ready to Use",
+        "Zero Waste",
+        "9 Months Shelf Life"
+      ],
       "tag": "Per 40kg Bag",
       "tag_icon": "shopping-bag"
     }
   ],
-  "wanda": {
-    "title": "Wanda <span>Premium Supplement</span>",
-    "description": "A unique, nutrient-rich feed supplement formulated to boost milk production, weight gain, and overall animal health.",
-    "image": "images/product-wanda.jpg",
-    "badge": "Premium Product",
-    "tag": "Powder &amp; Pellets Available",
-    "benefits": [
-      { "icon": "cow", "text": "Boosts Milk Yield <strong>+25%</strong>" },
-      { "icon": "shield-alt", "text": "Improves Immunity" },
-      { "icon": "leaf", "text": "100% Natural Ingredients" }
-    ]
-  },
-  "contact": {
-    "name": "JS Silage & Wanda Factory",
-    "tagline": "JS Silage & Wanda Factory — Quality silage and agricultural solutions since 2010.",
-    "phone": "+92 300 1234567",
-    "whatsapp": "923001234567",
-    "email": "info@jssilage.com",
-    "address": "Main Factory Road, Hasilpur, Punjab"
+  "news": [
+    {
+      "title": "New Sales Point in Kohat",
+      "date": "Aug 10",
+      "content": "We are proud to open our 7th sales point in Kohat to serve farmers in KPK better.",
+      "tag": "Announcement"
+    },
+    {
+      "title": "Free Delivery on Bulk Orders",
+      "date": "Jul 28",
+      "content": "For a limited time, enjoy free delivery on all silage orders above 10 tons.",
+      "tag": "Logistics"
+    },
+    {
+      "title": "Wanda Supplement — Now in Pellets",
+      "date": "Jul 15",
+      "content": "Our signature Wanda supplement is now available in easy-to-use pellet form.",
+      "tag": "Product"
+    }
+  ],
+  "hero": {
+    "badge": "Pakistan's Trusted Agri-Brand",
+    "title": "JS Silage <span>&amp;</span> Wanda Factory",
+    "subtitle": "Premium silage &amp; agricultural solutions — serving farmers across Pakistan."
   },
   "locations": [
     {
@@ -136,17 +216,13 @@
       "whatsapp": "",
       "address": "Rawat Chowk, Rawalpindi",
       "image": ""
+    },
+    {
+      "is_main": false,
+      "city": "Sherkot",
+      "contact": "Muazam Abbas",
+      "phone": "0202902892",
+      "address": "sherkot"
     }
-  ],
-  "prices": [
-    { "name": "Silage", "unit": "Open (Per Ton)", "price": "25,000", "badge": "Bulk", "is_wanda": false },
-    { "name": "Silage", "unit": "Baled (Per Bale)", "price": "1,200", "badge": "Best Seller", "is_wanda": false },
-    { "name": "Silage", "unit": "Bagged (Per 40kg Bag)", "price": "1,000", "badge": "Retail", "is_wanda": false },
-    { "name": "Wanda", "unit": "Supplement (Per 20kg Bag)", "price": "3,500", "badge": "Premium", "is_wanda": true }
-  ],
-  "news": [
-    { "title": "New Sales Point in Kohat", "date": "Aug 10", "content": "We are proud to open our 7th sales point in Kohat to serve farmers in KPK better.", "tag": "Announcement" },
-    { "title": "Free Delivery on Bulk Orders", "date": "Jul 28", "content": "For a limited time, enjoy free delivery on all silage orders above 10 tons.", "tag": "Logistics" },
-    { "title": "Wanda Supplement — Now in Pellets", "date": "Jul 15", "content": "Our signature Wanda supplement is now available in easy-to-use pellet form.", "tag": "Product" }
   ]
 }
