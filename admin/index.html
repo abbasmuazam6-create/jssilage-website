@@ -3,14 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JS Silage Admin Login</title>
-    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <title>JS Silage Admin</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
@@ -44,19 +39,33 @@
             box-shadow: 0 4px 16px rgba(201, 160, 78, 0.3);
         }
         .btn:hover { background: #b58a3a; transform: translateY(-2px); }
-        .status { margin-top: 16px; font-size: 0.9rem; color: #4d5f55; }
-        .hidden { display: none !important; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .status { margin-top: 16px; font-size: 0.9rem; color: #4d5f55; min-height: 24px; }
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #c9a04e;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <div class="container" id="app">
         <img src="/images/JS Final logo.jpeg" alt="JS Silage Logo" class="logo" />
         <h2>Admin Login</h2>
-        <p id="message">Click the button below to log in.</p>
-        <button class="btn" id="mainBtn">🔐 Login / Sign Up</button>
+        <p id="message">Loading...</p>
+        <button class="btn" id="mainBtn" disabled>Please wait...</button>
         <div class="status" id="status"></div>
     </div>
 
+    <!-- Load Netlify Identity Widget FIRST -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
         (function() {
             const netlifyIdentity = window.netlifyIdentity;
@@ -66,16 +75,19 @@
 
             function showLoggedIn(user) {
                 messageEl.textContent = '✅ Logged in as ' + user.email;
-                mainBtn.textContent = '📂 Enter CMS';
+                mainBtn.textContent = '📂 Open CMS';
+                mainBtn.disabled = false;
                 mainBtn.onclick = function() {
-                    window.location.href = '/admin/cms.html';
+                    // Redirect to the CMS page with a flag
+                    window.location.href = '/admin/cms.html?loggedin=true';
                 };
-                statusEl.textContent = 'Click "Enter CMS" to start editing.';
+                statusEl.textContent = 'Click "Open CMS" to start editing.';
             }
 
             function showLoggedOut() {
                 messageEl.textContent = 'Click the button to log in.';
                 mainBtn.textContent = '🔐 Login / Sign Up';
+                mainBtn.disabled = false;
                 mainBtn.onclick = function() {
                     netlifyIdentity.open('login');
                 };
@@ -106,7 +118,7 @@
                 showLoggedOut();
             });
 
-            // If there's a token in the URL, open the popup automatically
+            // Auto-open popup if there's a token in the URL
             if (window.location.hash.includes('invite_token') ||
                 window.location.hash.includes('recovery_token') ||
                 window.location.hash.includes('confirmation_token')) {
