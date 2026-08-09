@@ -4,14 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JS Silage Admin</title>
-    <!-- Load Netlify Identity Widget -->
+    <!-- Load Netlify Identity Widget FIRST -->
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
@@ -30,20 +26,9 @@
             max-width: 420px;
             width: 100%;
         }
-        .logo {
-            max-width: 100px;
-            margin-bottom: 20px;
-        }
-        h2 {
-            color: #1a3a2a;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-        p {
-            color: #4d5f55;
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-        }
+        .logo { max-width: 100px; margin-bottom: 20px; }
+        h2 { color: #1a3a2a; margin-bottom: 8px; font-weight: 700; }
+        p { color: #4d5f55; margin-bottom: 24px; font-size: 0.95rem; }
         .btn {
             background: #c9a04e;
             color: white;
@@ -56,24 +41,10 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 16px rgba(201, 160, 78, 0.3);
         }
-        .btn:hover {
-            background: #b58a3a;
-            transform: translateY(-2px);
-        }
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .status {
-            margin-top: 16px;
-            font-size: 0.9rem;
-            color: #4d5f55;
-            min-height: 24px;
-        }
-        .hidden {
-            display: none !important;
-        }
+        .btn:hover { background: #b58a3a; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .status { margin-top: 16px; font-size: 0.9rem; color: #4d5f55; min-height: 24px; }
+        .hidden { display: none !important; }
         .spinner {
             display: inline-block;
             width: 16px;
@@ -85,10 +56,7 @@
             margin-right: 8px;
             vertical-align: middle;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -101,119 +69,85 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const CMS_SCRIPT_URL = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        (function() {
+            // --- DOM Elements ---
+            const messageEl = document.getElementById('message');
+            const mainBtn = document.getElementById('mainBtn');
+            const statusEl = document.getElementById('status');
 
-        // --- DOM Elements ---
-        const messageEl = document.getElementById('message');
-        const mainBtn = document.getElementById('mainBtn');
-        const statusEl = document.getElementById('status');
+            // --- Netlify Identity Widget ---
+            const netlifyIdentity = window.netlifyIdentity;
 
-        // --- Netlify Identity Widget ---
-        const netlifyIdentity = window.netlifyIdentity;
+            // --- Helper: Load Decap CMS with Token ---
+            function loadDecapCMS(user) {
+                // Get the Identity token
+                user.jwt().then(function(token) {
+                    // Set the token in the CMS config
+                    if (window.CMS) {
+                        // CMS already loaded, just set the token
+                        window.CMS.init({
+                            config: {
+                                backend: {
+                                    name: 'git-gateway',
+                                    branch: 'main',
+                                    repo: 'abbasmuazam6-create/jssilage-website',
+                                    // Pass the token to the CMS
+                                    auth_endpoint: 'https://jssilage.netlify.app/.netlify/identity',
+                                    token: token
+                                }
+                            }
+                        });
+                        statusEl.innerHTML = '✅ CMS ready!';
+                        mainBtn.textContent = '📂 Open CMS Dashboard';
+                        mainBtn.disabled = false;
+                        mainBtn.onclick = function() {
+                            window.location.href = '/admin/';
+                        };
+                        return;
+                    }
 
-        // --- Helper: Load Decap CMS ---
-        function loadDecapCMS() {
-            // Check if Decap CMS is already loaded
-            if (window.CMS) {
-                statusEl.innerHTML = '✅ CMS already loaded.';
-                mainBtn.textContent = '📂 Open CMS';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    // Redirect to the CMS dashboard
-                    window.location.href = '/admin/index.html?cms=true';
-                };
-                return;
+                    // Load Decap CMS script
+                    statusEl.innerHTML = '⏳ Loading CMS...';
+                    const script = document.createElement('script');
+                    script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+                    script.onload = function() {
+                        // Initialize CMS with the token
+                        window.CMS.init({
+                            config: {
+                                backend: {
+                                    name: 'git-gateway',
+                                    branch: 'main',
+                                    repo: 'abbasmuazam6-create/jssilage-website',
+                                    auth_endpoint: 'https://jssilage.netlify.app/.netlify/identity',
+                                    token: token
+                                }
+                            }
+                        });
+                        statusEl.innerHTML = '✅ CMS ready!';
+                        mainBtn.textContent = '📂 Open CMS Dashboard';
+                        mainBtn.disabled = false;
+                        mainBtn.onclick = function() {
+                            window.location.href = '/admin/';
+                        };
+                    };
+                    script.onerror = function() {
+                        statusEl.innerHTML = '❌ Failed to load CMS. Please refresh.';
+                        mainBtn.textContent = '🔄 Retry';
+                        mainBtn.disabled = false;
+                        mainBtn.onclick = function() { location.reload(); };
+                    };
+                    document.head.appendChild(script);
+                }).catch(function(err) {
+                    statusEl.innerHTML = '❌ Error getting token: ' + err.message;
+                    mainBtn.textContent = '🔄 Retry';
+                    mainBtn.disabled = false;
+                    mainBtn.onclick = function() { location.reload(); };
+                });
             }
 
-            statusEl.innerHTML = '⏳ Loading CMS...';
-            mainBtn.textContent = 'Loading...';
-            mainBtn.disabled = true;
-
-            // Load Decap CMS script
-            const script = document.createElement('script');
-            script.src = CMS_SCRIPT_URL;
-            script.async = true;
-            script.onload = function() {
-                statusEl.innerHTML = '✅ CMS loaded successfully!';
-                mainBtn.textContent = '📂 Open CMS';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    window.location.href = '/admin/index.html?cms=true';
-                };
-            };
-            script.onerror = function() {
-                statusEl.innerHTML = '❌ Failed to load CMS. Please refresh.';
-                mainBtn.textContent = '🔄 Retry';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    location.reload();
-                };
-            };
-            document.head.appendChild(script);
-        }
-
-        // --- Handle Login Flow ---
-        function handleLogin(user) {
-            if (!user) {
-                // User is logged out
-                messageEl.textContent = 'Click the button below to log in.';
-                mainBtn.textContent = '🔐 Login / Sign Up';
-                mainBtn.disabled = false;
-                mainBtn.onclick = function() {
-                    netlifyIdentity.open('login');
-                };
-                statusEl.textContent = '';
-                return;
-            }
-
-            // User is logged in
-            messageEl.textContent = '✅ Logged in as ' + user.email;
-            mainBtn.textContent = '📂 Open CMS';
-            mainBtn.disabled = false;
-            mainBtn.onclick = function() {
-                // If CMS is loaded, open it; otherwise, load it first
-                if (window.CMS) {
-                    window.location.href = '/admin/index.html?cms=true';
-                } else {
-                    loadDecapCMS();
-                }
-            };
-            statusEl.textContent = '✅ Identity authenticated.';
-
-            // If we're already on the ?cms=true URL, load CMS directly
-            if (window.location.search.includes('cms=true')) {
-                loadDecapCMS();
-            }
-        }
-
-        // --- Initialize ---
-        function init() {
-            // Check if user is already logged in
-            const user = netlifyIdentity.currentUser();
-            if (user) {
-                handleLogin(user);
-            } else {
-                // Wait for identity to initialize
-                messageEl.textContent = 'Waiting for authentication...';
-                mainBtn.textContent = 'Loading...';
-                mainBtn.disabled = true;
-            }
-
-            // Listen for login events
-            netlifyIdentity.on('login', function(user) {
-                handleLogin(user);
-            });
-
-            netlifyIdentity.on('logout', function() {
-                handleLogin(null);
-            });
-
-            netlifyIdentity.on('init', function(user) {
-                if (user) {
-                    handleLogin(user);
-                } else {
-                    // No user, show login button
+            // --- Handle Login Flow ---
+            function handleLogin(user) {
+                if (!user) {
                     messageEl.textContent = 'Click the button below to log in.';
                     mainBtn.textContent = '🔐 Login / Sign Up';
                     mainBtn.disabled = false;
@@ -221,19 +155,69 @@
                         netlifyIdentity.open('login');
                     };
                     statusEl.textContent = '';
+                    return;
                 }
-            });
 
-            // If there's an invite or recovery token, open the popup automatically
-            if (window.location.hash.includes('invite_token') || window.location.hash.includes('recovery_token') || window.location.hash.includes('confirmation_token')) {
-                setTimeout(function() {
-                    netlifyIdentity.open('login');
-                }, 500);
+                // User is logged in
+                messageEl.textContent = '✅ Logged in as ' + user.email;
+                statusEl.textContent = '🔄 Authenticating with CMS...';
+                mainBtn.textContent = 'Please wait...';
+                mainBtn.disabled = true;
+
+                // Load Decap CMS with the user's token
+                loadDecapCMS(user);
             }
-        }
 
-        // --- Start ---
-        init();
+            // --- Initialize ---
+            function init() {
+                const user = netlifyIdentity.currentUser();
+                if (user) {
+                    handleLogin(user);
+                } else {
+                    messageEl.textContent = 'Waiting for authentication...';
+                    mainBtn.textContent = 'Loading...';
+                    mainBtn.disabled = true;
+                }
+
+                netlifyIdentity.on('login', function(user) {
+                    handleLogin(user);
+                });
+
+                netlifyIdentity.on('logout', function() {
+                    handleLogin(null);
+                });
+
+                netlifyIdentity.on('init', function(user) {
+                    if (user) {
+                        handleLogin(user);
+                    } else {
+                        messageEl.textContent = 'Click the button below to log in.';
+                        mainBtn.textContent = '🔐 Login / Sign Up';
+                        mainBtn.disabled = false;
+                        mainBtn.onclick = function() {
+                            netlifyIdentity.open('login');
+                        };
+                        statusEl.textContent = '';
+                    }
+                });
+
+                // Auto-open popup if there's a token in the URL
+                if (window.location.hash.includes('invite_token') || 
+                    window.location.hash.includes('recovery_token') || 
+                    window.location.hash.includes('confirmation_token')) {
+                    setTimeout(function() {
+                        netlifyIdentity.open('login');
+                    }, 500);
+                }
+            }
+
+            // --- Start ---
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
     </script>
 </body>
 </html>
