@@ -102,6 +102,15 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* CMS container (hidden until needed) */
+        #cmsContainer {
+            width: 100%;
+            height: 100vh;
+            display: none;
+        }
+        #cmsContainer.visible {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -117,35 +126,67 @@
         </div>
     </div>
 
+    <!-- ===== CMS CONTAINER ===== -->
+    <div id="cmsContainer"></div>
+
+    <!-- ===== DECAP CMS SCRIPT ===== -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js">
+    </script>
+
     <script>
         (function() {
             const netlifyIdentity = window.netlifyIdentity;
             const loginOverlay = document.getElementById('loginOverlay');
+            const cmsContainer = document.getElementById('cmsContainer');
             const loginBtn = document.getElementById('loginBtn');
             const loginMessage = document.getElementById('loginMessage');
             const loginStatus = document.getElementById('loginStatus');
 
-            // --- DIRECT URL TO GENERAL SETTINGS (SKIPS DASHBOARD) ---
-            const SETTINGS_URL = '/admin/#/collections/settings/entries/general';
+            // --- The deep link URL for settings ---
+            const SETTINGS_HASH = '#/collections/settings/entries/general';
 
-            // --- Function: Redirect directly to settings ---
-            function goToSettings() {
-                // Hide the login overlay
+            // --- Function: Show CMS with deep link ---
+            function showCMSWithDeepLink() {
+                // Hide login overlay
                 loginOverlay.classList.add('hidden');
 
-                // Remove Identity Widget from DOM
+                // Show CMS container
+                cmsContainer.classList.add('visible');
+
+                // Initialize CMS if not already initialized
+                if (window.CMS && !window.CMS._initialized) {
+                    try {
+                        window.CMS.init({
+                            config: {
+                                backend: {
+                                    name: 'git-gateway',
+                                    branch: 'main',
+                                    repo: 'abbasmuazam6-create/jssilage-website'
+                                }
+                            }
+                        });
+                        window.CMS._initialized = true;
+                    } catch (e) {
+                        console.error('CMS init error:', e);
+                    }
+                }
+
+                // Remove Identity Widget from DOM to prevent conflicts
                 const identityWidget = document.querySelector('.netlify-identity-widget');
                 if (identityWidget && identityWidget.parentNode) {
                     identityWidget.parentNode.removeChild(identityWidget);
                 }
 
-                // Redirect directly to settings page
-                window.location.href = SETTINGS_URL;
+                // Navigate to the settings page
+                if (window.location.hash !== SETTINGS_HASH) {
+                    window.location.hash = SETTINGS_HASH;
+                }
             }
 
             // --- Function: Show login overlay ---
             function showLogin() {
                 loginOverlay.classList.remove('hidden');
+                cmsContainer.classList.remove('visible');
                 loginMessage.textContent = 'Click the button below to log in.';
                 loginBtn.textContent = '🔐 Login / Sign Up';
                 loginBtn.disabled = false;
@@ -155,13 +196,13 @@
                 loginStatus.textContent = '';
             }
 
-            // --- Function: Show "Logged in" state ---
+            // --- Function: Show logged in state ---
             function showLoggedIn(user) {
                 loginMessage.textContent = '✅ Logged in as ' + user.email;
                 loginBtn.textContent = '📂 Open Settings';
                 loginBtn.disabled = false;
                 loginBtn.onclick = function() {
-                    goToSettings();
+                    showCMSWithDeepLink();
                 };
                 loginStatus.textContent = 'Click "Open Settings" to edit your data.';
             }
@@ -170,9 +211,10 @@
             netlifyIdentity.on('init', function(user) {
                 if (user) {
                     showLoggedIn(user);
-                    // Auto-enter if flag is present
-                    if (window.location.hash.includes('auto-enter')) {
-                        goToSettings();
+                    // Auto-enter if flag is present or if we're on the settings path
+                    if (window.location.hash.includes('collections/settings') ||
+                        window.location.hash.includes('auto-enter')) {
+                        showCMSWithDeepLink();
                     }
                 } else {
                     showLogin();
@@ -183,7 +225,7 @@
                 showLoggedIn(user);
                 // Auto-enter after login
                 setTimeout(function() {
-                    goToSettings();
+                    showCMSWithDeepLink();
                 }, 500);
             });
 
@@ -195,9 +237,9 @@
             const user = netlifyIdentity.currentUser();
             if (user) {
                 showLoggedIn(user);
-                // Auto-enter if URL has auto-enter
-                if (window.location.search.includes('auto-enter')) {
-                    goToSettings();
+                // If we're on the settings path, auto-enter
+                if (window.location.hash.includes('collections/settings')) {
+                    showCMSWithDeepLink();
                 }
             } else {
                 showLogin();
@@ -210,6 +252,27 @@
                 setTimeout(function() {
                     netlifyIdentity.open('login');
                 }, 500);
+            }
+
+            // --- If the CMS is already loaded (via script), handle it ---
+            if (window.CMS) {
+                // Ensure the CMS is initialized and ready
+                if (!window.CMS._initialized) {
+                    try {
+                        window.CMS.init({
+                            config: {
+                                backend: {
+                                    name: 'git-gateway',
+                                    branch: 'main',
+                                    repo: 'abbasmuazam6-create/jssilage-website'
+                                }
+                            }
+                        });
+                        window.CMS._initialized = true;
+                    } catch (e) {
+                        console.error('CMS init error:', e);
+                    }
+                }
             }
         })();
     </script>
