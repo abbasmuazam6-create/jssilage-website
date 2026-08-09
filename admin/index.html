@@ -4,8 +4,21 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JS Silage Admin Panel</title>
+    <!-- Force the CMS to load the token from the URL -->
+    <script>
+        // Check if we have a token in the URL and redirect to admin with it
+        (function() {
+            var hash = window.location.hash;
+            if (hash && hash.includes('invite_token')) {
+                // We're on the root domain with a token, redirect to /admin/ with the token
+                var newUrl = window.location.origin + '/admin/' + hash;
+                window.location.replace(newUrl);
+            }
+        })();
+    </script>
 </head>
 <body>
+    <!-- Load Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
