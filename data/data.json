@@ -70,17 +70,63 @@
       "whatsapp": "",
       "address": "Rawat Chowk, Rawalpindi",
       "image": ""
+    },
+    {
+      "is_main": false,
+      "city": "sherkot",
+      "contact": "Muazam abbas",
+      "phone": "0333333333",
+      "address": "sherkot"
     }
   ],
   "prices": [
-    { "name": "Silage", "unit": "Open (Per Ton)", "price": "25,000", "badge": "Bulk", "is_wanda": false },
-    { "name": "Silage", "unit": "Baled (Per Bale)", "price": "1,200", "badge": "Best Seller", "is_wanda": false },
-    { "name": "Silage", "unit": "Bagged (Per 40kg Bag)", "price": "1,000", "badge": "Retail", "is_wanda": false },
-    { "name": "Wanda", "unit": "Supplement (Per 20kg Bag)", "price": "3,500", "badge": "Premium", "is_wanda": true }
+    {
+      "name": "Silage",
+      "unit": "Open (Per Ton)",
+      "price": "25,000",
+      "badge": "Bulk",
+      "is_wanda": false
+    },
+    {
+      "name": "Silage",
+      "unit": "Baled (Per Bale)",
+      "price": "1,200",
+      "badge": "Best Seller",
+      "is_wanda": false
+    },
+    {
+      "name": "Silage",
+      "unit": "Bagged (Per 40kg Bag)",
+      "price": "1,000",
+      "badge": "Retail",
+      "is_wanda": false
+    },
+    {
+      "name": "Wanda",
+      "unit": "Supplement (Per 20kg Bag)",
+      "price": "3,500",
+      "badge": "Premium",
+      "is_wanda": true
+    }
   ],
   "news": [
-    { "title": "New Sales Point in Kohat", "date": "Aug 10", "content": "We are proud to open our 7th sales point in Kohat to serve farmers in KPK better.", "tag": "Announcement" },
-    { "title": "Free Delivery on Bulk Orders", "date": "Jul 28", "content": "For a limited time, enjoy free delivery on all silage orders above 10 tons.", "tag": "Logistics" },
-    { "title": "Wanda Supplement — Now in Pellets", "date": "Jul 15", "content": "Our signature Wanda supplement is now available in easy-to-use pellet form.", "tag": "Product" }
+    {
+      "title": "New Sales Point in Kohat",
+      "date": "Aug 10",
+      "content": "We are proud to open our 7th sales point in Kohat to serve farmers in KPK better.",
+      "tag": "Announcement"
+    },
+    {
+      "title": "Free Delivery on Bulk Orders",
+      "date": "Jul 28",
+      "content": "For a limited time, enjoy free delivery on all silage orders above 10 tons.",
+      "tag": "Logistics"
+    },
+    {
+      "title": "Wanda Supplement — Now in Pellets",
+      "date": "Jul 15",
+      "content": "Our signature Wanda supplement is now available in easy-to-use pellet form.",
+      "tag": "Product"
+    }
   ]
 }
