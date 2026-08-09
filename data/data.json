@@ -223,6 +223,13 @@
       "contact": "Muazam Abbas",
       "phone": "0202902892",
       "address": "sherkot"
+    },
+    {
+      "is_main": false,
+      "city": "Mardan",
+      "contact": "Shazib Khan",
+      "address": "MARDAN MOTOR WAY",
+      "image": "https://1s4oyld5dc.ucarecd.net/606f5438-52af-48e1-96aa-559fbb140fdb/"
     }
   ]
 }
